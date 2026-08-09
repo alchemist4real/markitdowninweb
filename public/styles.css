@@ -824,14 +824,36 @@ nav {
   border-radius: var(--radius-md);
 }
 
-.log-line {
-  margin-bottom: 4px;
-  line-height: 1.4;
-}
-
 .log-line.info { color: var(--fg-muted); }
 .log-line.success { color: var(--live-dot); }
 .log-line.error { color: var(--danger); }
+
+/* App Footer Credits */
+.app-footer {
+  margin-top: 50px;
+  padding-top: 24px;
+  border-top: 1px solid var(--fg-faint);
+  text-align: center;
+}
+
+.footer-text {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+
+.footer-link {
+  color: var(--fg);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid var(--fg-faint);
+  transition: opacity 0.2s;
+}
+
+.footer-link:hover {
+  opacity: 0.8;
+  border-bottom-color: var(--fg);
+}
 
 /* Mobile Navigation Bar */
 .mobile-nav-bar {

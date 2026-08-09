@@ -5,6 +5,13 @@
 
 ---
 
+## 👥 Credits & Acknowledgments
+
+- **Core Conversion Engine**: Powered by [Microsoft MarkItDown](https://github.com/microsoft/markitdown)
+- **Web Application & UI Architecture**: Designed, Crafted & Maintained by [alchemist4real](https://github.com/alchemist4real)
+
+---
+
 ## 🌟 About `markitdowninweb`
 
 `markitdowninweb` is a modern, enterprise-grade web application and REST API server that wraps Microsoft's `markitdown` engine into an intuitive multi-format converter. Designed with the minimalist brutalist aesthetic of `alchemist4real` (`Cormorant Garamond` serif headers, `DM Mono` monospace body, animated pipeline matrix, and fractal noise texture), it provides instant conversion for single files, multi-file batch queues, remote web URIs, and pasted snippets.
