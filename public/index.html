@@ -82,39 +82,45 @@ html, body {
   position: relative;
 }
 
-/* Clean Header / Navigation */
+/* Floating Framed Top Navigation Bar */
 nav {
   position: sticky;
-  top: 0;
+  top: 16px;
   z-index: 100;
-  height: 60px;
-  background: var(--yellow);
-  border-bottom: 2px solid var(--indigo);
+  max-width: 1100px;
+  margin: 16px auto 0;
+  padding: 0 16px;
 }
 
 .nav-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  height: 100%;
+  background: var(--yellow);
+  border: 2px solid var(--indigo);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-og);
+  height: 64px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 24px;
+  transition: all 0.2s ease;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
 }
 
-.live-dot {
-  width: 10px;
-  height: 10px;
-  background: var(--live-dot);
-  border-radius: 50%;
-  display: inline-block;
-  box-shadow: 0 0 8px var(--live-dot);
+.nav-logo-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  transition: transform 0.2s;
+}
+
+.nav-logo-img:hover {
+  transform: scale(1.15) rotate(-5deg);
 }
 
 .logo-text {
@@ -122,21 +128,26 @@ nav {
   font-weight: 700;
   font-size: 1.35rem;
   letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .version-tag {
   font-size: 10px;
   color: var(--indigo);
   background: rgba(54, 36, 134, 0.1);
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--indigo);
-  font-weight: 600;
+  border: 1.5px solid var(--indigo);
+  font-weight: 700;
+  letter-spacing: 0.05em;
 }
 
 .nav-controls {
   display: flex;
-  gap: 10px;
+  gap: 14px;
+  align-items: center;
 }
 
 /* App Container */
@@ -155,6 +166,22 @@ nav {
   max-width: 720px;
   margin-left: auto;
   margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-logo-img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  margin-bottom: 16px;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hero-logo-img:hover {
+  transform: scale(1.1) rotate(4deg);
 }
 
 .display {
@@ -474,7 +501,21 @@ nav {
 }
 
 .dropzone-icon {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.dropzone-logo-img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dropzone:hover .dropzone-logo-img {
+  transform: scale(1.15) rotate(-3deg);
 }
 
 .dropzone-heading {
@@ -968,8 +1009,11 @@ nav {
   <nav>
     <div class="nav-container">
       <div class="brand">
-        <span class="live-dot" title="Server Online"></span>
-        <span class="logo-text"><span class="brand-sub">markitdown</span><span class="brand-main">inweb</span> <span class="version-tag">v1.0.0</span></span>
+        <img src="logo.svg" alt="MarkItDown Logo" class="nav-logo-img">
+        <span class="logo-text">
+          <span><span class="brand-sub">markitdown</span><span class="brand-main">inweb</span></span>
+          <span class="version-tag">v1.0.0</span>
+        </span>
       </div>
       <div class="nav-controls">
         <button id="settingsToggleBtn" class="btn-ghost" title="Conversion Settings">SETTINGS</button>
@@ -1082,6 +1126,7 @@ nav {
   <main class="app-container">
     <!-- Clean Minimal Hero Header -->
     <header class="hero">
+      <img src="logo.svg" alt="MarkItDown Logo" class="hero-logo-img">
       <h1 class="display brand-display"><span class="brand-sub">markitdown</span><span class="brand-main">inweb</span></h1>
       <p class="body-text muted">
         Convert PDF, Word, Excel, PowerPoint, Images, Audio, URLs, and text into clean Markdown.
@@ -1103,9 +1148,7 @@ nav {
           <input type="file" id="fileInput" multiple style="display:none">
           <div class="dropzone-inner">
             <div class="dropzone-icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#362486" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-              </svg>
+              <img src="logo.svg" alt="MarkItDown Logo" class="dropzone-logo-img">
             </div>
             <div class="dropzone-heading">DRAG & DROP FILES OR CLICK TO UPLOAD</div>
             <div class="zero-api-badge">✓ Free & Instant</div>
