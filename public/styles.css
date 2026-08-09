@@ -1,39 +1,24 @@
 :root {
   --vanilla: #FFEBAF;
-  --moonstone: #4C9DB0;
+  --moonstone: #0E2B32;
+  --moonstone-light: #4C9DB0;
   --bg: #FFEBAF;
-  --bg-card: #FFF4D1;
-  --fg: #4C9DB0;
-  --fg-muted: #387887;
-  --fg-faint: #F5DA8E;
-  --accent: #4C9DB0;
-  --live-dot: #4C9DB0;
-  --tag-bg: #FCE8A4;
-  --tag-fg: #4C9DB0;
-  --danger: #4C9DB0;
-  --warning: #4C9DB0;
+  --bg-card: rgba(255, 243, 205, 0.9);
+  --fg: #0E2B32;
+  --fg-muted: #1D505B;
+  --fg-faint: rgba(14, 43, 50, 0.2);
+  --accent: #0E2B32;
+  --live-dot: #0E2B32;
+  --tag-bg: rgba(76, 157, 176, 0.18);
+  --tag-fg: #0E2B32;
+  --danger: #0E2B32;
+  --warning: #0E2B32;
   --font-display: 'Cormorant Garamond', serif;
   --font-mono: 'DM Mono', monospace;
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
   --radius-pill: 9999px;
-}
-
-[data-theme="dark"] {
-  --vanilla: #FFEBAF;
-  --moonstone: #4C9DB0;
-  --bg: #4C9DB0;
-  --bg-card: #3F889A;
-  --fg: #FFEBAF;
-  --fg-muted: #FCE39C;
-  --fg-faint: #5CAEC1;
-  --accent: #FFEBAF;
-  --live-dot: #FFEBAF;
-  --tag-bg: #367988;
-  --tag-fg: #FFEBAF;
-  --danger: #FFEBAF;
-  --warning: #FFEBAF;
 }
 
 /* Option 4C Typography Brand Styling */
@@ -202,7 +187,7 @@ nav {
 .body-text {
   font-size: 15px;
   line-height: 1.7;
-  color: #2A5964;
+  color: #1D505B;
   font-weight: 500;
   max-width: 600px;
   margin: 0 auto;
@@ -314,15 +299,16 @@ nav {
 
 .m-node-desc {
   font-size: 11px;
-  color: #387887;
+  color: #1D505B;
+  font-weight: 500;
   line-height: 1.3;
 }
 
 .wire-h {
   width: 40px;
   height: 2px;
-  background: var(--fg-faint);
-  opacity: 0.8;
+  background: var(--fg);
+  opacity: 0.4;
   flex-shrink: 0;
 }
 
@@ -339,19 +325,19 @@ nav {
   overflow: hidden;
   background: radial-gradient(
     circle at var(--mouse-x) var(--mouse-y),
-    rgba(255, 255, 255, 0.6) 0%,
-    rgba(255, 244, 209, 0.85) 60%,
-    rgba(248, 232, 185, 0.75) 100%
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 240, 192, 0.88) 55%,
+    rgba(242, 222, 160, 0.8) 100%
   ) !important;
-  backdrop-filter: blur(28px) contrast(125%) brightness(108%) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(28px) contrast(125%) brightness(108%) saturate(190%) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(32px) contrast(135%) brightness(110%) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(32px) contrast(135%) brightness(110%) saturate(200%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.95) !important;
   box-shadow: 
-    inset 0 2px 4px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -3px 8px 0 rgba(76, 157, 176, 0.35),
-    inset 3px 0 6px 0 rgba(255, 255, 255, 0.65),
-    inset -3px 0 6px 0 rgba(76, 157, 176, 0.25),
-    0 24px 50px -12px rgba(76, 157, 176, 0.28) !important;
+    inset 0 3px 5px 0 rgba(255, 255, 255, 1),
+    inset 0 -4px 10px 0 rgba(14, 43, 50, 0.35),
+    inset 4px 0 8px 0 rgba(255, 255, 255, 0.85),
+    inset -4px 0 8px 0 rgba(14, 43, 50, 0.25),
+    0 28px 60px -15px rgba(14, 43, 50, 0.32) !important;
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -456,7 +442,7 @@ nav {
 
 .setting-desc {
   font-size: 11px;
-  color: #387887;
+  color: #1D505B;
 }
 
 .text-input, .select-input {
