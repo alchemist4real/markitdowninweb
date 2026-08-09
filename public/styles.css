@@ -56,45 +56,45 @@ html, body {
   position: relative;
 }
 
-/* Animated Ambient Liquid Morphing Orbs */
+/* Rich Ambient Background — gives the glass something to refract through */
 body::after {
   content: '';
   position: fixed;
-  top: -150px;
-  right: -150px;
-  width: 650px;
-  height: 650px;
-  background: radial-gradient(circle, rgba(76, 157, 176, 0.28) 0%, rgba(255, 235, 175, 0) 70%);
+  top: -20%;
+  right: -10%;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(76, 157, 176, 0.5) 0%, rgba(76, 157, 176, 0.15) 40%, transparent 70%);
   pointer-events: none;
   z-index: 0;
   border-radius: 50%;
-  animation: orbFloat1 18s ease-in-out infinite alternate;
+  animation: orbFloat1 20s ease-in-out infinite alternate;
 }
 
 body::before {
   content: '';
   position: fixed;
-  bottom: -200px;
-  left: -200px;
-  width: 750px;
-  height: 750px;
-  background: radial-gradient(circle, rgba(76, 157, 176, 0.22) 0%, rgba(255, 235, 175, 0) 70%);
+  bottom: -15%;
+  left: -10%;
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(circle, rgba(76, 157, 176, 0.4) 0%, rgba(255, 210, 120, 0.15) 45%, transparent 70%);
   pointer-events: none;
   z-index: 0;
   border-radius: 50%;
-  animation: orbFloat2 22s ease-in-out infinite alternate;
+  animation: orbFloat2 25s ease-in-out infinite alternate;
 }
 
 @keyframes orbFloat1 {
   0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-80px, 100px) scale(1.15); }
-  100% { transform: translate(60px, -50px) scale(0.95); }
+  50% { transform: translate(-120px, 80px) scale(1.2); }
+  100% { transform: translate(80px, -60px) scale(0.9); }
 }
 
 @keyframes orbFloat2 {
   0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(100px, -90px) scale(1.1); }
-  100% { transform: translate(-40px, 70px) scale(0.9); }
+  50% { transform: translate(120px, -100px) scale(1.15); }
+  100% { transform: translate(-60px, 80px) scale(0.85); }
 }
 
 /* Navigation layout (glass material handled by Liquid Glass system below) */
@@ -307,45 +307,46 @@ body::before {
      Layer 3: Dynamic specular surface highlights (::after pseudo for sheen)
    ============================================ */
 
-/* Layer 1: Glass Body - Translucent Refraction */
+/* Layer 1: Glass Body — truly translucent, NO filter on text */
 .workbench, .settings-drawer, .m-node, .pane, .dropzone {
   --mouse-x: 50%;
   --mouse-y: 50%;
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  contain: layout style;
 
-  /* Translucent tinted glass — NOT opaque */
-  background: rgba(255, 240, 200, 0.45) !important;
+  /* TRANSLUCENT — you MUST see the orbs through this */
+  background: rgba(255, 245, 220, 0.35) !important;
 
-  /* Real optical blur refraction */
-  backdrop-filter: blur(40px) saturate(220%) brightness(115%) contrast(110%) !important;
-  -webkit-backdrop-filter: blur(40px) saturate(220%) brightness(115%) contrast(110%) !important;
+  /* Frosted optical blur */
+  backdrop-filter: blur(24px) saturate(180%) brightness(108%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(108%) !important;
 
-  /* Apply SVG displacement refraction filter */
-  filter: url(#liquidLens);
+  /* NO filter: url() here — it distorts text! */
 
-  /* Layer 2: Concentric volumetric border rings — Apple's signature thick glass edge */
-  border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
-  outline: 1.5px solid rgba(14, 43, 50, 0.06);
-  outline-offset: -3px;
-  box-shadow:
-    /* Inner concentric ring 1 — bright top edge (specular rim) */
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
-    /* Inner concentric ring 2 — soft diffuse inner glow */
-    inset 0 0 20px 0 rgba(255, 255, 255, 0.35),
-    /* Inner concentric ring 3 — bottom edge depth shadow */
-    inset 0 -2px 8px 0 rgba(14, 43, 50, 0.15),
-    /* Outer volumetric depth shadow — the glass "floats" */
-    0 8px 32px -4px rgba(14, 43, 50, 0.18),
-    0 2px 6px -1px rgba(14, 43, 50, 0.08) !important;
-
+  /* Luminous glass border — thick bright edge like real curved glass */
+  border: 2px solid rgba(255, 255, 255, 0.85) !important;
   border-radius: var(--radius-lg);
+
+  /* Concentric volumetric edge lighting */
+  box-shadow:
+    /* Bright specular top rim — light catching the glass edge */
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 1),
+    /* Soft inner glow — glass volume */
+    inset 0 0 30px 0 rgba(255, 255, 255, 0.25),
+    /* Bottom edge depth — shadow under the glass thickness */
+    inset 0 -2px 12px 0 rgba(14, 43, 50, 0.12),
+    /* Left/Right edge specular — side light catch */
+    inset 2px 0 8px 0 rgba(255, 255, 255, 0.4),
+    inset -2px 0 8px 0 rgba(255, 255, 255, 0.4),
+    /* Outer floating depth shadow */
+    0 8px 32px -4px rgba(14, 43, 50, 0.2),
+    0 2px 8px -2px rgba(14, 43, 50, 0.1) !important;
+
   transition: box-shadow 0.3s ease, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Layer 1 variant: Nav bar — thinner glass, horizontal */
+/* Nav bar — glass strip */
 nav {
   --mouse-x: 50%;
   --mouse-y: 50%;
@@ -354,15 +355,14 @@ nav {
   z-index: 100;
   height: 60px;
   isolation: isolate;
-  background: rgba(255, 240, 200, 0.55) !important;
-  backdrop-filter: blur(48px) saturate(240%) brightness(112%) !important;
-  -webkit-backdrop-filter: blur(48px) saturate(240%) brightness(112%) !important;
-  filter: url(#liquidLens);
-  border-bottom: 1.5px solid rgba(255, 255, 255, 0.65) !important;
+  background: rgba(255, 245, 220, 0.45) !important;
+  backdrop-filter: blur(32px) saturate(200%) brightness(110%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(110%) !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.8) !important;
   box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.85),
-    inset 0 -1px 6px 0 rgba(14, 43, 50, 0.06),
-    0 4px 24px -2px rgba(14, 43, 50, 0.12) !important;
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 8px 0 rgba(14, 43, 50, 0.06),
+    0 4px 24px -2px rgba(14, 43, 50, 0.15) !important;
 }
 
 /* Layer 1 variant: Small interactive glass elements */
@@ -1125,12 +1125,9 @@ nav {
   .liquid-ripple {
     animation: none !important;
   }
-  .workbench, .settings-drawer, .m-node, .pane, .dropzone, nav {
-    filter: none !important;
-  }
 }
 
 /* GPU Performance Hints */
 .workbench, .settings-drawer, .m-node, .pane, .dropzone, nav {
-  will-change: filter, backdrop-filter;
+  will-change: backdrop-filter, box-shadow;
 }
