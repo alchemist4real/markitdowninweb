@@ -82,19 +82,23 @@ html, body {
   position: relative;
 }
 
-/* Floating Framed Top Navigation Bar */
+/* Floating Framed Fixed Navigation Bar */
 nav {
-  position: sticky;
+  position: fixed;
   top: 16px;
-  z-index: 100;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   max-width: 1100px;
-  margin: 16px auto 0;
-  padding: 0 16px;
+  margin: 0 auto;
+  padding: 0 20px;
+  pointer-events: none;
 }
 
 .nav-container {
+  pointer-events: auto;
   background: var(--yellow);
-  border: 2px solid var(--indigo);
+  border: 2.5px solid var(--indigo);
   border-radius: var(--radius-pill);
   box-shadow: var(--shadow-og);
   height: 64px;
@@ -102,13 +106,13 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 0 24px;
-  transition: all 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .nav-logo-img {
@@ -130,50 +134,12 @@ nav {
   letter-spacing: 0.02em;
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
 .nav-brand-title {
   display: inline-flex;
   align-items: center;
-  max-width: 0;
-  opacity: 0;
-  overflow: hidden;
   white-space: nowrap;
-  transition: max-width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
-}
-
-nav.scrolled .nav-brand-title {
-  max-width: 260px;
-  opacity: 1;
-}
-
-.nav-lab-tag {
-  font-family: var(--font-display);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  color: var(--indigo);
-  background: var(--yellow);
-  border: 1.5px solid var(--indigo);
-  padding: 3px 12px;
-  border-radius: var(--radius-pill);
-  font-weight: 700;
-  transition: opacity 0.3s ease;
-}
-
-nav.scrolled .nav-lab-tag {
-  display: none;
-}
-
-.version-tag {
-  font-size: 10px;
-  color: var(--indigo);
-  background: rgba(54, 36, 134, 0.1);
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  border: 1.5px solid var(--indigo);
-  font-weight: 700;
-  letter-spacing: 0.05em;
 }
 
 .nav-controls {
@@ -186,7 +152,7 @@ nav.scrolled .nav-lab-tag {
 .app-container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 40px 20px 80px;
+  padding: 100px 20px 80px;
   position: relative;
   z-index: 1;
 }
@@ -201,18 +167,6 @@ nav.scrolled .nav-lab-tag {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.hero-badge {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--yellow);
-  background: var(--indigo);
-  padding: 4px 16px;
-  border-radius: var(--radius-pill);
-  margin-bottom: 16px;
-  display: inline-block;
 }
 
 .hero-logo-img {
@@ -1056,11 +1010,7 @@ nav.scrolled .nav-lab-tag {
     <div class="nav-container">
       <div class="brand">
         <img src="logo.svg" alt="MarkItDown Logo" class="nav-logo-img">
-        <div class="logo-text">
-          <span class="nav-brand-title"><span class="brand-sub">markitdown</span><span class="brand-main">inweb</span></span>
-          <span class="nav-lab-tag">CONVERSION LAB</span>
-          <span class="version-tag">v1.0.0</span>
-        </div>
+        <span class="logo-text"><span class="brand-sub">markitdown</span><span class="brand-main">inweb</span></span>
       </div>
       <div class="nav-controls">
         <button id="settingsToggleBtn" class="btn-ghost" title="Conversion Settings">SETTINGS</button>
@@ -1173,7 +1123,6 @@ nav.scrolled .nav-lab-tag {
   <main class="app-container">
     <!-- Clean Minimal Hero Header -->
     <header class="hero">
-      <div class="hero-badge">DOCUMENT &amp; MULTIMODAL CONVERSION LAB</div>
       <img src="logo.svg" alt="MarkItDown Logo" class="hero-logo-img">
       <h1 class="display brand-display"><span class="brand-sub">markitdown</span><span class="brand-main">inweb</span></h1>
       <p class="body-text muted">
@@ -1778,17 +1727,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initOGInteractionEngine() {
-    const nav = document.querySelector("nav");
-    function updateScrollRelation() {
-      if (window.scrollY > 90) {
-        nav.classList.add("scrolled");
-      } else {
-        nav.classList.remove("scrolled");
-      }
-    }
-    window.addEventListener("scroll", updateScrollRelation, { passive: true });
-    updateScrollRelation();
-    log("OG Clean UI Interaction Engine initialized with Scroll-Relation title reveal.", "info");
+    log("OG Clean UI Interaction Engine initialized with Floating Fixed Navbar.", "info");
   }
 
   initOGInteractionEngine();
