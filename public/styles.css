@@ -317,19 +317,46 @@ nav {
   to { background-position: 14px 0; }
 }
 
-/* True Liquid Glass Specular Rim Refraction & Optical Sheen */
-.workbench, .settings-drawer, .m-node, .pane, nav {
+/* True Liquid Glass Specular Rim Refraction & Mouse Lensing (Apple WWDC 2025 Liquid Glass UI) */
+.workbench, .settings-drawer, .m-node, .pane, nav, .dropzone, .btn-ghost, .tab-btn {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(24px) contrast(120%) brightness(106%) saturate(190%);
-  -webkit-backdrop-filter: blur(24px) contrast(120%) brightness(106%) saturate(190%);
-  border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
+  background: radial-gradient(
+    circle at var(--mouse-x) var(--mouse-y),
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 244, 209, 0.85) 60%,
+    rgba(248, 232, 185, 0.75) 100%
+  ) !important;
+  backdrop-filter: blur(28px) contrast(125%) brightness(108%) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) contrast(125%) brightness(108%) saturate(190%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.75) !important;
   box-shadow: 
     inset 0 2px 4px 0 rgba(255, 255, 255, 0.95),
     inset 0 -3px 8px 0 rgba(76, 157, 176, 0.35),
     inset 3px 0 6px 0 rgba(255, 255, 255, 0.65),
     inset -3px 0 6px 0 rgba(76, 157, 176, 0.25),
     0 24px 50px -12px rgba(76, 157, 176, 0.28) !important;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Liquid Click Ripple Expansion */
+.liquid-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(76, 157, 176, 0.25) 60%, transparent 100%);
+  transform: scale(0);
+  animation: liquidRippleWave 0.6s cubic-bezier(0, 0.2, 0.8, 1);
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes liquidRippleWave {
+  to {
+    transform: scale(2.8);
+    opacity: 0;
+  }
 }
 
 /* Dynamic Liquid Light Sheen Animation */
@@ -343,7 +370,7 @@ nav {
   background: linear-gradient(
     45deg,
     transparent 45%,
-    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.35) 50%,
     transparent 55%
   );
   pointer-events: none;

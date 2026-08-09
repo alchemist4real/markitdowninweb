@@ -407,4 +407,48 @@ document.addEventListener("DOMContentLoaded", () => {
   function escapeHtml(str) {
     return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
+
+  // WWDC 2025 Liquid Glass Motion & Lensing Engine (carolhsiaoo/awesome-liquid-glass)
+  function initLiquidGlassEngine() {
+    const glassElements = document.querySelectorAll('.workbench, .settings-drawer, .m-node, .btn-ghost, .tab-btn, .dropzone, .pane, .logs-window');
+    
+    glassElements.forEach(el => {
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const px = ((x / rect.width) * 100).toFixed(1);
+        const py = ((y / rect.height) * 100).toFixed(1);
+        
+        el.style.setProperty('--mouse-x', `${px}%`);
+        el.style.setProperty('--mouse-y', `${py}%`);
+      });
+
+      el.addEventListener('mouseleave', () => {
+        el.style.setProperty('--mouse-x', `50%`);
+        el.style.setProperty('--mouse-y', `50%`);
+      });
+
+      // Liquid Fluid Touch/Click Ripple Effect
+      el.addEventListener('click', (e) => {
+        const rect = el.getBoundingClientRect();
+        const circle = document.createElement('span');
+        const diameter = Math.max(rect.width, rect.height);
+        const radius = diameter / 2;
+
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${e.clientX - rect.left - radius}px`;
+        circle.style.top = `${e.clientY - rect.top - radius}px`;
+        circle.className = 'liquid-ripple';
+
+        const existingRipple = el.getElementsByClassName('liquid-ripple')[0];
+        if (existingRipple) existingRipple.remove();
+
+        el.appendChild(circle);
+        setTimeout(() => circle.remove(), 600);
+      });
+    });
+  }
+
+  initLiquidGlassEngine();
 });
