@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Logger Helper
   function log(msg, type = "info") {
+    if (!logWindow) return;
     const line = document.createElement("div");
     line.className = `log-line ${type}`;
     const timestamp = new Date().toLocaleTimeString();
@@ -75,10 +76,12 @@ document.addEventListener("DOMContentLoaded", () => {
     logWindow.scrollTop = logWindow.scrollHeight;
   }
 
-  clearLogsBtn.addEventListener("click", () => {
-    logWindow.innerHTML = "";
-    log("Logs cleared.", "info");
-  });
+  if (clearLogsBtn) {
+    clearLogsBtn.addEventListener("click", () => {
+      if (logWindow) logWindow.innerHTML = "";
+      log("Logs cleared.", "info");
+    });
+  }
 
   // Theme Toggle
   themeToggleBtn.addEventListener("click", () => {
@@ -204,10 +207,10 @@ document.addEventListener("DOMContentLoaded", () => {
     formData.append("keep_data_uris", keepDataUrisCheckbox.checked);
     if (llmProviderSelect && llmProviderSelect.value) formData.append("llm_provider", llmProviderSelect.value);
 
-    if (openaiApiKeyInput.value) formData.append("openai_api_key", openaiApiKeyInput.value);
-    if (llmModelInput.value) formData.append("llm_model", llmModelInput.value);
-    if (docintelEndpointInput.value) formData.append("docintel_endpoint", docintelEndpointInput.value);
-    if (cuEndpointInput.value) formData.append("cu_endpoint", cuEndpointInput.value);
+    if (openaiApiKeyInput && openaiApiKeyInput.value) formData.append("openai_api_key", openaiApiKeyInput.value);
+    if (llmModelInput && llmModelInput.value) formData.append("llm_model", llmModelInput.value);
+    if (docintelEndpointInput && docintelEndpointInput.value) formData.append("docintel_endpoint", docintelEndpointInput.value);
+    if (cuEndpointInput && cuEndpointInput.value) formData.append("cu_endpoint", cuEndpointInput.value);
 
     try {
       const resp = await fetch("/api/convert/file", {

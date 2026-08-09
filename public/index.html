@@ -49,48 +49,26 @@
       <p class="body-text muted">
         Convert PDF, Word, Excel, PowerPoint, Audio, Images, EPub, Outlook MSG, YouTube transcripts, and Web URLs into clean, token-efficient Markdown powered by Microsoft MarkItDown.
       </p>
+  <main class="app-container">
+    <!-- Clean Minimal Hero Header -->
+    <header class="hero">
+      <h1 class="display">markitdowninweb</h1>
+      <p class="body-text muted">
+        Convert PDF, Word, Excel, PowerPoint, Images, Audio, URLs, and text into clean Markdown.
+      </p>
     </header>
-
-    <!-- Interactive Pipeline Matrix Visualization -->
-    <section class="pipeline-matrix" aria-label="Pipeline Architecture Matrix">
-      <div class="matrix-row">
-        <div class="m-node">
-          <div class="m-node-header">STAGE 01</div>
-          <div class="m-node-title">Input Stream</div>
-          <div class="m-node-desc">Files, URLs, Data URIs, Text</div>
-        </div>
-        <div class="wire-h flow-right"></div>
-        <div class="m-node">
-          <div class="m-node-header">STAGE 02</div>
-          <div class="m-node-title">Magika AI Sensing</div>
-          <div class="m-node-desc">Format & Charset Identification</div>
-        </div>
-        <div class="wire-h flow-right"></div>
-        <div class="m-node">
-          <div class="m-node-header">STAGE 03</div>
-          <div class="m-node-title">Engine / Vision / Cloud</div>
-          <div class="m-node-desc">Converters, LLM Vision OCR, Azure</div>
-        </div>
-        <div class="wire-h flow-right"></div>
-        <div class="m-node">
-          <div class="m-node-header">STAGE 04</div>
-          <div class="m-node-title">Markdown Output</div>
-          <div class="m-node-desc">Clean LLM Prompt Payload</div>
-        </div>
-      </div>
-    </section>
 
     <!-- Settings Accordion Drawer (Hidden by default) -->
     <section id="settingsDrawer" class="settings-drawer hidden">
       <div class="drawer-header">
-        <span class="label">CONVERSION ENGINE CONFIGURATION</span>
+        <span class="label">SETTINGS</span>
         <button id="closeSettingsBtn" class="close-btn">&times;</button>
       </div>
       <div class="drawer-grid">
         <div class="setting-group">
           <label class="setting-title" for="enablePluginsCheckbox">
             <input type="checkbox" id="enablePluginsCheckbox" checked>
-            Enable 3rd-Party Plugins & markitdown-ocr
+            Enable Plugins & OCR
           </label>
           <span class="setting-desc">Enables OCR vision and registered plugin extensions.</span>
         </div>
@@ -98,22 +76,22 @@
         <div class="setting-group">
           <label class="setting-title" for="keepDataUrisCheckbox">
             <input type="checkbox" id="keepDataUrisCheckbox">
-            Keep Embedded Base64 Data URIs
+            Keep Base64 Data URIs
           </label>
-          <span class="setting-desc">Preserves full inline base64 image strings instead of truncating them.</span>
+          <span class="setting-desc">Preserves inline base64 image strings.</span>
         </div>
 
         <div class="setting-group">
-          <label class="label" for="llmProviderSelect">Vision OCR Engine Provider</label>
+          <label class="label" for="llmProviderSelect">Vision OCR Engine</label>
           <select id="llmProviderSelect" class="select-input">
-            <option value="auto" selected>Auto / Native Extractor (No API Key Needed)</option>
+            <option value="auto" selected>Auto Free OCR (OCR.space / Native)</option>
             <option value="openrouter">OpenRouter Free Vision (qwen-2.5-vl)</option>
             <option value="gemini">Google Gemini (gemini-2.0-flash)</option>
             <option value="groq">Groq (llama-3.2-11b-vision)</option>
             <option value="ollama">Ollama Local (llava @ localhost:11434)</option>
             <option value="openai">OpenAI (gpt-4o)</option>
           </select>
-          <span class="setting-desc">Choose a free, local, or custom vision provider for image OCR.</span>
+          <span class="setting-desc">Choose a free or local vision provider.</span>
         </div>
 
         <div class="setting-group">
@@ -123,18 +101,8 @@
         </div>
 
         <div class="setting-group">
-          <label class="label" for="llmModelInput">LLM Vision Model</label>
+          <label class="label" for="llmModelInput">LLM Model</label>
           <input type="text" id="llmModelInput" class="text-input" value="gpt-4o" placeholder="gpt-4o">
-        </div>
-
-        <div class="setting-group">
-          <label class="label" for="docintelEndpointInput">Azure Document Intelligence Endpoint</label>
-          <input type="text" id="docintelEndpointInput" class="text-input" placeholder="https://<resource>.cognitiveservices.azure.com/">
-        </div>
-
-        <div class="setting-group">
-          <label class="label" for="cuEndpointInput">Azure Content Understanding Endpoint</label>
-          <input type="text" id="cuEndpointInput" class="text-input" placeholder="https://<resource>.cognitiveservices.azure.com/">
         </div>
       </div>
     </section>
@@ -143,9 +111,9 @@
     <section class="workbench">
       <!-- Input Mode Tabs -->
       <div class="input-tabs">
-        <button class="tab-btn active" data-tab="filesTab">FILE / BATCH DROPZONE</button>
-        <button class="tab-btn" data-tab="urlTab">REMOTE URL / YOUTUBE / WIKI</button>
-        <button class="tab-btn" data-tab="textTab">DIRECT TEXT / HTML PASTE</button>
+        <button class="tab-btn active" data-tab="filesTab">Files</button>
+        <button class="tab-btn" data-tab="urlTab">URL</button>
+        <button class="tab-btn" data-tab="textTab">Text</button>
       </div>
 
       <!-- Tab Content 1: File / Batch Dropzone -->
@@ -155,12 +123,12 @@
           <div class="dropzone-inner">
             <div class="dropzone-icon">⚡</div>
             <div class="dropzone-heading">DRAG & DROP FILES OR CLICK TO UPLOAD</div>
-            <div class="zero-api-badge">✓ 100% FREE — NO API KEY REQUIRED</div>
+            <div class="zero-api-badge">✓ Free & Instant</div>
             <div class="dropzone-sub">
-              Supports PDF, DOCX, XLSX, XLS, PPTX, PNG, JPG, MP3, WAV, HTML, CSV, JSON, XML, EPub, MSG, ZIP
+              PDF, DOCX, XLSX, XLS, PPTX, Images, Audio, HTML, CSV, EPub, MSG, ZIP
             </div>
             <div class="preset-pills">
-              <span class="label">TRY FORMAT PRESETS:</span>
+              <span class="label">PRESETS:</span>
               <button class="preset-btn" data-preset="sample.pdf">Sample PDF</button>
               <button class="preset-btn" data-preset="table.xlsx">Sample Excel</button>
               <button class="preset-btn" data-preset="doc.docx">Sample Word</button>
@@ -175,7 +143,7 @@
             <span id="batchCountLabel" class="label">BATCH QUEUE (0 FILES)</span>
             <div class="batch-actions">
               <button id="clearBatchBtn" class="btn-ghost danger">CLEAR QUEUE</button>
-              <button id="convertBatchZipBtn" class="btn-ghost accent">CONVERT & DOWNLOAD ALL AS ZIP</button>
+              <button id="convertBatchZipBtn" class="btn-ghost accent">CONVERT ALL (ZIP)</button>
             </div>
           </div>
           <div id="batchList" class="batch-list"></div>
@@ -185,10 +153,10 @@
       <!-- Tab Content 2: Remote URL -->
       <div id="urlTab" class="tab-content">
         <div class="url-input-container">
-          <label class="label" for="urlInput">ENTER PUBLIC DOCUMENT, YOUTUBE, WIKIPEDIA, OR WEB URL</label>
+          <label class="label" for="urlInput">ENTER PUBLIC DOCUMENT, YOUTUBE, OR WEB URL</label>
           <div class="input-row">
             <input type="url" id="urlInput" class="text-input" placeholder="https://en.wikipedia.org/wiki/Markdown or https://youtu.be/..." required>
-            <button id="convertUrlBtn" class="btn-ghost accent">CONVERT URL</button>
+            <button id="convertUrlBtn" class="btn-ghost accent">CONVERT</button>
           </div>
         </div>
       </div>
@@ -206,7 +174,7 @@
               <option value=".xml">Hint: XML</option>
               <option value=".txt">Hint: Plain Text</option>
             </select>
-            <button id="convertTextBtn" class="btn-ghost accent">CONVERT SNIPPET</button>
+            <button id="convertTextBtn" class="btn-ghost accent">CONVERT</button>
           </div>
         </div>
       </div>
@@ -214,14 +182,14 @@
       <!-- Status Bar & Progress Indicator -->
       <div id="statusBar" class="status-bar hidden">
         <div class="spinner"></div>
-        <span id="statusText" class="status-text">Processing document stream through MarkItDown...</span>
+        <span id="statusText" class="status-text">Converting document...</span>
       </div>
 
       <!-- Output Workbench: Dual-Pane Editor & Live Preview -->
       <div id="outputSection" class="output-section hidden">
         <div class="output-header">
           <div class="output-title">
-            <span class="label">CONVERTED OUTPUT</span>
+            <span class="label">OUTPUT</span>
             <span id="docTitleBadge" class="doc-title-badge">document.md</span>
           </div>
           <div class="output-stats">
@@ -230,7 +198,7 @@
             <span class="stat-pill accent-pill"><strong id="tokenCount">0</strong> EST. TOKENS</span>
           </div>
           <div class="output-actions">
-            <button id="copyMdBtn" class="btn-ghost">COPY MARKDOWN</button>
+            <button id="copyMdBtn" class="btn-ghost">COPY</button>
             <button id="downloadMdBtn" class="btn-ghost accent">DOWNLOAD .MD</button>
           </div>
         </div>
@@ -240,7 +208,7 @@
           <!-- Left Pane: Raw Markdown Source -->
           <div class="pane">
             <div class="pane-bar">
-              <span class="label">RAW MARKDOWN SOURCE</span>
+              <span class="label">RAW MARKDOWN</span>
             </div>
             <textarea id="markdownSource" class="markdown-editor" readonly></textarea>
           </div>
@@ -248,21 +216,10 @@
           <!-- Right Pane: Rendered HTML Preview -->
           <div class="pane">
             <div class="pane-bar">
-              <span class="label">RENDERED PREVIEW</span>
+              <span class="label">PREVIEW</span>
             </div>
             <div id="markdownPreview" class="markdown-preview"></div>
           </div>
-        </div>
-      </div>
-
-      <!-- Pipeline Log Window -->
-      <div class="logs-container">
-        <div class="logs-header">
-          <span class="label">PIPELINE EXECUTION LOGS</span>
-          <button id="clearLogsBtn" class="text-btn">Clear Logs</button>
-        </div>
-        <div id="logWindow" class="logs-window">
-          <div class="log-line info">[SYSTEM] markitdowninweb engine initialized and ready.</div>
         </div>
       </div>
     </section>
