@@ -46,6 +46,7 @@ def get_markitdown_instance(
     openai_base_url: Optional[str] = None,
     llm_model: Optional[str] = "gpt-4o",
     llm_prompt: Optional[str] = None,
+    llm_provider: Optional[str] = "auto",
     docintel_endpoint: Optional[str] = None,
     cu_endpoint: Optional[str] = None,
     cu_analyzer_id: Optional[str] = None,
@@ -54,21 +55,39 @@ def get_markitdown_instance(
         raise HTTPException(status_code=500, detail="MarkItDown library is not installed or available.")
 
     kwargs = {}
-    
-    # Configure OpenAI / Vision client if API key is provided
-    if openai_api_key:
+
+    # Handle Free and Custom Vision API Providers
+    api_key = openai_api_key or os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY") or os.getenv("GROQ_API_KEY") or os.getenv("GEMINI_API_KEY") or "free-dummy-key"
+    base_url = openai_base_url
+    model = llm_model or "gpt-4o"
+
+    if llm_provider == "openrouter":
+        base_url = base_url or "https://openrouter.ai/api/v1"
+        model = llm_model or "qwen/qwen-2.5-vl-72b-instruct:free"
+    elif llm_provider == "gemini":
+        base_url = base_url or "https://generativelanguage.googleapis.com/v1beta/openai/"
+        model = llm_model or "gemini-2.0-flash"
+    elif llm_provider == "groq":
+        base_url = base_url or "https://api.groq.com/openai/v1"
+        model = llm_model or "llama-3.2-11b-vision-preview"
+    elif llm_provider == "ollama":
+        base_url = base_url or "http://localhost:11434/v1"
+        model = llm_model or "llava"
+
+    # Configure Vision client if key or provider is specified
+    if api_key and (enable_plugins or openai_api_key or openai_base_url or llm_provider != "auto"):
         try:
             from openai import OpenAI
-            client_kwargs = {"api_key": openai_api_key}
-            if openai_base_url:
-                client_kwargs["base_url"] = openai_base_url
+            client_kwargs = {"api_key": api_key}
+            if base_url:
+                client_kwargs["base_url"] = base_url
             client = OpenAI(**client_kwargs)
             kwargs["llm_client"] = client
-            kwargs["llm_model"] = llm_model or "gpt-4o"
+            kwargs["llm_model"] = model
             if llm_prompt:
                 kwargs["llm_prompt"] = llm_prompt
         except Exception as e:
-            print(f"Warning initializing OpenAI client: {e}")
+            print(f"Warning initializing Vision LLM client: {e}")
 
     if docintel_endpoint:
         kwargs["docintel_endpoint"] = docintel_endpoint
@@ -123,6 +142,7 @@ async def convert_file(
     openai_base_url: Optional[str] = Form(None),
     llm_model: Optional[str] = Form("gpt-4o"),
     llm_prompt: Optional[str] = Form(None),
+    llm_provider: Optional[str] = Form("auto"),
     docintel_endpoint: Optional[str] = Form(None),
     cu_endpoint: Optional[str] = Form(None),
     cu_analyzer_id: Optional[str] = Form(None),
@@ -139,6 +159,7 @@ async def convert_file(
             openai_base_url=openai_base_url,
             llm_model=llm_model,
             llm_prompt=llm_prompt,
+            llm_provider=llm_provider,
             docintel_endpoint=docintel_endpoint,
             cu_endpoint=cu_endpoint,
             cu_analyzer_id=cu_analyzer_id

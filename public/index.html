@@ -104,9 +104,22 @@
         </div>
 
         <div class="setting-group">
-          <label class="label" for="openaiApiKeyInput">OpenAI / Vision API Key (Optional)</label>
-          <input type="password" id="openaiApiKeyInput" class="text-input" placeholder="sk-... (Optional for AI Image Descriptions)">
-          <span class="setting-desc">100% optional. MarkItDown converts documents, PDFs, Office files, tables & text natively without any API key.</span>
+          <label class="label" for="llmProviderSelect">Vision OCR Engine Provider</label>
+          <select id="llmProviderSelect" class="select-input">
+            <option value="auto" selected>Auto / Native Extractor (No API Key Needed)</option>
+            <option value="openrouter">OpenRouter Free Vision (qwen-2.5-vl)</option>
+            <option value="gemini">Google Gemini (gemini-2.0-flash)</option>
+            <option value="groq">Groq (llama-3.2-11b-vision)</option>
+            <option value="ollama">Ollama Local (llava @ localhost:11434)</option>
+            <option value="openai">OpenAI (gpt-4o)</option>
+          </select>
+          <span class="setting-desc">Choose a free, local, or custom vision provider for image OCR.</span>
+        </div>
+
+        <div class="setting-group">
+          <label class="label" for="openaiApiKeyInput">Vision API Key (Optional)</label>
+          <input type="password" id="openaiApiKeyInput" class="text-input" placeholder="Optional API Key">
+          <span class="setting-desc">100% optional. Native document conversion works free without any API key.</span>
         </div>
 
         <div class="setting-group">

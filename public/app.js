@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const enablePluginsCheckbox = document.getElementById("enablePluginsCheckbox");
   const keepDataUrisCheckbox = document.getElementById("keepDataUrisCheckbox");
+  const llmProviderSelect = document.getElementById("llmProviderSelect");
   const openaiApiKeyInput = document.getElementById("openaiApiKeyInput");
   const llmModelInput = document.getElementById("llmModelInput");
   const docintelEndpointInput = document.getElementById("docintelEndpointInput");
@@ -201,6 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
     formData.append("file", file);
     formData.append("enable_plugins", enablePluginsCheckbox.checked);
     formData.append("keep_data_uris", keepDataUrisCheckbox.checked);
+    if (llmProviderSelect && llmProviderSelect.value) formData.append("llm_provider", llmProviderSelect.value);
 
     if (openaiApiKeyInput.value) formData.append("openai_api_key", openaiApiKeyInput.value);
     if (llmModelInput.value) formData.append("llm_model", llmModelInput.value);
