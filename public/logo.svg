@@ -1,8 +1,165 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&amp;display=swap');
-  </style>
-  <rect width="512" height="512" rx="112" fill="#362486" />
-  <text x="256" y="215" font-family="'Cormorant Garamond', Georgia, serif" font-weight="600" font-size="68" fill="#FFE500" opacity="0.85" text-anchor="middle" letter-spacing="-1">markitdown</text>
-  <text x="256" y="345" font-family="'Cormorant Garamond', Georgia, serif" font-weight="700" font-size="136" fill="#FFE500" text-anchor="middle" letter-spacing="-4">inweb</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 512" width="720" height="512">
+  <rect width="720" height="512" rx="64" fill="#362486" />
+  <g>
+    <!-- markitdown -->
+<line x1="65" y1="93" x2="65" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="65" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="65" cy="129" r="6.75" fill="#FFE500" />
+<line x1="83" y1="93" x2="83" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="83" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="83" cy="129" r="6.75" fill="#FFE500" />
+<line x1="101" y1="93" x2="101" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="101" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="101" cy="129" r="6.75" fill="#FFE500" />
+<line x1="65" y1="93" x2="101" y2="93" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="65" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="101" cy="93" r="6.75" fill="#FFE500" />
+<line x1="130" y1="93" x2="148" y2="93" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="130" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="148" cy="93" r="6.75" fill="#FFE500" />
+<line x1="121" y1="102" x2="121" y2="120" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="121" cy="102" r="6.75" fill="#FFE500" />
+<circle cx="121" cy="120" r="6.75" fill="#FFE500" />
+<line x1="157" y1="93" x2="157" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="157" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="157" cy="129" r="6.75" fill="#FFE500" />
+<line x1="130" y1="111" x2="148" y2="111" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="130" cy="111" r="6.75" fill="#FFE500" />
+<circle cx="148" cy="111" r="6.75" fill="#FFE500" />
+<line x1="130" y1="129" x2="148" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="130" cy="129" r="6.75" fill="#FFE500" />
+<circle cx="148" cy="129" r="6.75" fill="#FFE500" />
+<line x1="177" y1="93" x2="177" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="177" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="177" cy="129" r="6.75" fill="#FFE500" />
+<line x1="177" y1="93" x2="204" y2="93" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="177" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="204" cy="93" r="6.75" fill="#FFE500" />
+<line x1="213" y1="102" x2="213" y2="102" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="213" cy="102" r="6.75" fill="#FFE500" />
+<circle cx="213" cy="102" r="6.75" fill="#FFE500" />
+<line x1="233" y1="75" x2="233" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="233" cy="75" r="6.75" fill="#FFE500" />
+<circle cx="233" cy="129" r="6.75" fill="#FFE500" />
+<line x1="233" y1="111" x2="269" y2="84" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="233" cy="111" r="6.75" fill="#FFE500" />
+<circle cx="269" cy="84" r="6.75" fill="#FFE500" />
+<line x1="242" y1="102" x2="269" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="242" cy="102" r="6.75" fill="#FFE500" />
+<circle cx="269" cy="129" r="6.75" fill="#FFE500" />
+<line x1="307" y1="75" x2="307" y2="84" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="307" cy="75" r="6.75" fill="#FFE500" />
+<circle cx="307" cy="84" r="6.75" fill="#FFE500" />
+<line x1="307" y1="102" x2="307" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="307" cy="102" r="6.75" fill="#FFE500" />
+<circle cx="307" cy="129" r="6.75" fill="#FFE500" />
+<line x1="345" y1="93" x2="381" y2="93" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="345" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="381" cy="93" r="6.75" fill="#FFE500" />
+<line x1="363" y1="84" x2="363" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="363" cy="84" r="6.75" fill="#FFE500" />
+<circle cx="363" cy="129" r="6.75" fill="#FFE500" />
+<line x1="363" y1="129" x2="381" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="363" cy="129" r="6.75" fill="#FFE500" />
+<circle cx="381" cy="129" r="6.75" fill="#FFE500" />
+<line x1="437" y1="75" x2="437" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="437" cy="75" r="6.75" fill="#FFE500" />
+<circle cx="437" cy="129" r="6.75" fill="#FFE500" />
+<line x1="410" y1="93" x2="428" y2="93" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="410" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="428" cy="93" r="6.75" fill="#FFE500" />
+<line x1="401" y1="102" x2="401" y2="120" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="401" cy="102" r="6.75" fill="#FFE500" />
+<circle cx="401" cy="120" r="6.75" fill="#FFE500" />
+<line x1="410" y1="129" x2="428" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="410" cy="129" r="6.75" fill="#FFE500" />
+<circle cx="428" cy="129" r="6.75" fill="#FFE500" />
+<line x1="466" y1="93" x2="484" y2="93" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="466" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="484" cy="93" r="6.75" fill="#FFE500" />
+<line x1="457" y1="102" x2="457" y2="120" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="457" cy="102" r="6.75" fill="#FFE500" />
+<circle cx="457" cy="120" r="6.75" fill="#FFE500" />
+<line x1="493" y1="102" x2="493" y2="120" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="493" cy="102" r="6.75" fill="#FFE500" />
+<circle cx="493" cy="120" r="6.75" fill="#FFE500" />
+<line x1="466" y1="129" x2="484" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="466" cy="129" r="6.75" fill="#FFE500" />
+<circle cx="484" cy="129" r="6.75" fill="#FFE500" />
+<line x1="513" y1="93" x2="513" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="513" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="513" cy="129" r="6.75" fill="#FFE500" />
+<line x1="531" y1="93" x2="531" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="531" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="531" cy="129" r="6.75" fill="#FFE500" />
+<line x1="549" y1="93" x2="549" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="549" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="549" cy="129" r="6.75" fill="#FFE500" />
+<line x1="513" y1="129" x2="549" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="513" cy="129" r="6.75" fill="#FFE500" />
+<circle cx="549" cy="129" r="6.75" fill="#FFE500" />
+<line x1="569" y1="93" x2="569" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="569" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="569" cy="129" r="6.75" fill="#FFE500" />
+<line x1="569" y1="93" x2="605" y2="93" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="569" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="605" cy="93" r="6.75" fill="#FFE500" />
+<line x1="605" y1="93" x2="605" y2="129" stroke="#FFE500" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="605" cy="93" r="6.75" fill="#FFE500" />
+<circle cx="605" cy="129" r="6.75" fill="#FFE500" />
+  </g>
+  <g>
+    <!-- inweb -->
+<line x1="204" y1="265" x2="204" y2="277" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="204" cy="265" r="9.0" fill="#FFE500" />
+<circle cx="204" cy="277" r="9.0" fill="#FFE500" />
+<line x1="204" y1="301" x2="204" y2="337" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="204" cy="301" r="9.0" fill="#FFE500" />
+<circle cx="204" cy="337" r="9.0" fill="#FFE500" />
+<line x1="252" y1="289" x2="252" y2="337" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="252" cy="289" r="9.0" fill="#FFE500" />
+<circle cx="252" cy="337" r="9.0" fill="#FFE500" />
+<line x1="252" y1="289" x2="300" y2="289" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="252" cy="289" r="9.0" fill="#FFE500" />
+<circle cx="300" cy="289" r="9.0" fill="#FFE500" />
+<line x1="300" y1="289" x2="300" y2="337" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="300" cy="289" r="9.0" fill="#FFE500" />
+<circle cx="300" cy="337" r="9.0" fill="#FFE500" />
+<line x1="324" y1="289" x2="324" y2="337" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="324" cy="289" r="9.0" fill="#FFE500" />
+<circle cx="324" cy="337" r="9.0" fill="#FFE500" />
+<line x1="348" y1="289" x2="348" y2="337" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="348" cy="289" r="9.0" fill="#FFE500" />
+<circle cx="348" cy="337" r="9.0" fill="#FFE500" />
+<line x1="372" y1="289" x2="372" y2="337" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="372" cy="289" r="9.0" fill="#FFE500" />
+<circle cx="372" cy="337" r="9.0" fill="#FFE500" />
+<line x1="324" y1="337" x2="372" y2="337" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="324" cy="337" r="9.0" fill="#FFE500" />
+<circle cx="372" cy="337" r="9.0" fill="#FFE500" />
+<line x1="408" y1="289" x2="432" y2="289" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="408" cy="289" r="9.0" fill="#FFE500" />
+<circle cx="432" cy="289" r="9.0" fill="#FFE500" />
+<line x1="396" y1="301" x2="396" y2="325" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="396" cy="301" r="9.0" fill="#FFE500" />
+<circle cx="396" cy="325" r="9.0" fill="#FFE500" />
+<line x1="408" y1="313" x2="432" y2="313" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="408" cy="313" r="9.0" fill="#FFE500" />
+<circle cx="432" cy="313" r="9.0" fill="#FFE500" />
+<line x1="408" y1="337" x2="444" y2="337" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="408" cy="337" r="9.0" fill="#FFE500" />
+<circle cx="444" cy="337" r="9.0" fill="#FFE500" />
+<line x1="468" y1="265" x2="468" y2="337" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="468" cy="265" r="9.0" fill="#FFE500" />
+<circle cx="468" cy="337" r="9.0" fill="#FFE500" />
+<line x1="480" y1="289" x2="504" y2="289" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="480" cy="289" r="9.0" fill="#FFE500" />
+<circle cx="504" cy="289" r="9.0" fill="#FFE500" />
+<line x1="516" y1="301" x2="516" y2="325" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="516" cy="301" r="9.0" fill="#FFE500" />
+<circle cx="516" cy="325" r="9.0" fill="#FFE500" />
+<line x1="480" y1="337" x2="504" y2="337" stroke="#FFE500" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="480" cy="337" r="9.0" fill="#FFE500" />
+<circle cx="504" cy="337" r="9.0" fill="#FFE500" />
+  </g>
 </svg>

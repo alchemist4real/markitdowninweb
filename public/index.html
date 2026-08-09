@@ -13,10 +13,10 @@
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
 
-  <!-- Google Fonts: Cormorant Garamond & DM Mono -->
+  <!-- Google Fonts: Y2K Moonbase Alpha Fonts (Silkscreen, Micro 5, DotGothic16, Rubik Microbe) & DM Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Micro+5&family=Rubik+Microbe&family=Silkscreen:wght@400;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
   <!-- Marked.js & Highlight.js for Live Preview -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -38,7 +38,7 @@
   --tag-fg: #362486;
   --danger: #362486;
   --warning: #362486;
-  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-display: 'Silkscreen', 'Micro 5', 'DotGothic16', 'Rubik Microbe', 'DM Mono', monospace;
   --font-mono: 'DM Mono', monospace;
   --radius-sm: 8px;
   --radius-md: 16px;
@@ -47,15 +47,16 @@
   --shadow-og: 4px 4px 0px #362486;
 }
 
-/* Option 4C Typography Brand Styling */
+/* Y2K Moonbase Alpha Display Typography */
 .logo-text, .brand-display {
   font-family: var(--font-display);
+  letter-spacing: -0.02em;
 }
 
 .brand-sub {
   font-family: var(--font-display);
   color: var(--fg-muted);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .brand-main {
@@ -160,7 +161,7 @@ nav {
 .display {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(2.6rem, 6vw, 4.2rem);
+  font-size: clamp(2.2rem, 5.5vw, 3.8rem);
   line-height: 1.1;
   margin-bottom: 16px;
   color: var(--indigo);

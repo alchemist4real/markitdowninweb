@@ -12,7 +12,7 @@
   --tag-fg: #362486;
   --danger: #362486;
   --warning: #362486;
-  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-display: 'Silkscreen', 'Micro 5', 'DotGothic16', 'DM Mono', monospace;
   --font-mono: 'DM Mono', monospace;
   --radius-sm: 8px;
   --radius-md: 16px;
@@ -21,15 +21,16 @@
   --shadow-og: 4px 4px 0px #362486;
 }
 
-/* Option 4C Typography Brand Styling */
+/* Y2K Moonbase Alpha Display Typography */
 .logo-text, .brand-display {
   font-family: var(--font-display);
+  letter-spacing: -0.02em;
 }
 
 .brand-sub {
   font-family: var(--font-display);
   color: var(--fg-muted);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .brand-main {
