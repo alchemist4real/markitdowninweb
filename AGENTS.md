@@ -1,28 +1,23 @@
 # AGENTS.md — Workspace Design System & Behavioral Guardrails
 
 ## 🎨 Color Palette (Strict 2-Color Monochromatic Rule)
-- **Vanilla (`#FFEBAF`)**: Main canvas background, card base fills, light mode highlights.
-- **Moonstone (`#4C9DB0`)**: Main brand text, serif titles, icons, tab pills, button borders, active indicators, and specular shadow glints.
-- **Strict Prohibition**: **ZERO** black (`#000000`/`#0D0D0D`), **ZERO** white (`#FFFFFF`), **ZERO** green (`#22C55E`), **ZERO** gradients, and **ZERO** extra colors.
+- **Electric Yellow (`#FFE500`)**: Main canvas background, card fills, and inverted hover text.
+- **Deep Indigo (`#362486`)**: Main brand text, Y2K titles, icons, tab pills, button borders, active indicators, and solid 3D shadows (`box-shadow: 4px 4px 0px #362486`).
+- **Strict Prohibition**: **ZERO** black (`#000000`), **ZERO** white (`#FFFFFF`), **ZERO** green (`#22C55E`), **ZERO** extra colors.
 
 ---
 
 ## 🔤 Typography Rules
-- All `markitdowninweb` title headers (`.logo-text`, `.brand-display`, `.brand-sub`, `.brand-main`) **MUST** use `Cormorant Garamond` serif font (`'Cormorant Garamond', Georgia, serif`).
-- Interface controls, buttons, metadata, metrics, and logs use `DM Mono` (`'DM Mono', monospace`).
-- No light/dark theme toggle buttons; single unified monochromatic experience.
+- All `markitdowninweb` title headers (`.logo-text`, `.brand-display`, `.brand-sub`, `.brand-main`) **MUST** use `Moonbase Alpha` Y2K font stack (`'Silkscreen', 'Micro 5', 'DotGothic16', 'Rubik Microbe', 'DM Mono', monospace`) and custom vector SVG letterforms in `logo.svg`.
+- Interface controls, buttons, metadata, metrics, editor, preview, and logs use `DM Mono` (`'DM Mono', monospace`).
+- Single unified 2-color monochromatic design system.
 
 ---
 
-## 💧 Apple WWDC 2025 Liquid Glass UI Material System
-- **Optical Lensing**: `backdrop-filter: blur(28px) contrast(125%) brightness(108%) saturate(190%)`.
-- **4-Point Specular Rim Refraction**:
-  - `inset 0 2px 4px rgba(255, 255, 255, 0.95)` (Top rim light)
-  - `inset 0 -3px 8px rgba(76, 157, 176, 0.35)` (Bottom shadow refract)
-  - `inset 3px 0 6px rgba(255, 255, 255, 0.65)` & `inset -3px 0 6px rgba(76, 157, 176, 0.25)` (Side specular edges)
-- **Mouse-Following Refraction**: Real-time cursor coordinate tracking (`--mouse-x`, `--mouse-y`) updating focal radial gradients via `initLiquidGlassEngine()`.
-- **Fluid Ripples**: Expanding `.liquid-ripple` touch/click waves across glass surfaces.
-- **SVG Displacement Lensing**: Real-time SVG `<filter id="liquidLens">` with `feTurbulence` and `feDisplacementMap`.
+## ⚡ Clean OG Minimal Design System (Reverted from Liquid Glass)
+- **Flat Bold Cards**: 2px solid Deep Indigo (`#362486`) borders with crisp 3D drop-shadows (`box-shadow: 4px 4px 0px #362486`).
+- **High Legibility**: 10.5:1 WCAG AAA contrast ratio.
+- **Single File Bundle**: All HTML, CSS, and JS bundled in `public/index.html`.
 
 ---
 
