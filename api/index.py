@@ -293,10 +293,28 @@ async def convert_batch(
     )
 
 # Serve public directory static files
-public_dir = os.path.join(os.path.dirname(__file__), "..", "public")
-if os.path.exists(public_dir):
-    app.mount("/", StaticFiles(directory=public_dir, html=True), name="static")
+public_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "public"))
+
+@app.get("/")
+def serve_index():
+    index_file = os.path.join(public_dir, "index.html")
+    if os.path.isfile(index_file):
+        return FileResponse(index_file)
+    return {"status": "online", "app": "markitdowninweb"}
+
+@app.get("/{filename:path}")
+def serve_static(filename: str):
+    if filename.startswith("api/"):
+        raise HTTPException(status_code=404, detail="API route not found")
+    target = os.path.abspath(os.path.join(public_dir, filename))
+    if target.startswith(public_dir) and os.path.isfile(target):
+        return FileResponse(target)
+    index_file = os.path.join(public_dir, "index.html")
+    if os.path.isfile(index_file):
+        return FileResponse(index_file)
+    raise HTTPException(status_code=404, detail="Not found")
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("index:app", host="0.0.0.0", port=8000, reload=True)
+
