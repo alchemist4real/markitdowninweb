@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="markitdowninweb — Enterprise document & multimodal to Markdown conversion lab by Microsoft MarkItDown.">
-  <meta name="theme-color" content="#0D0D0D">
+  <meta name="theme-color" content="#FFEBAF">
   <title>MARKITDOWNINWEB // CONVERSION LAB</title>
 
   <!-- SVG Logo Favicon -->
@@ -23,44 +23,1102 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
-  <link rel="stylesheet" href="styles.css">
+  <style>
+:root {
+  --vanilla: #FFEBAF;
+  --moonstone: #0E2B32;
+  --moonstone-light: #4C9DB0;
+  --bg: #FFEBAF;
+  --bg-card: rgba(255, 243, 205, 0.9);
+  --fg: #0E2B32;
+  --fg-muted: #1D505B;
+  --fg-faint: rgba(14, 43, 50, 0.2);
+  --accent: #0E2B32;
+  --live-dot: #0E2B32;
+  --tag-bg: rgba(76, 157, 176, 0.18);
+  --tag-fg: #0E2B32;
+  --danger: #0E2B32;
+  --warning: #0E2B32;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-mono: 'DM Mono', monospace;
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
+  --radius-pill: 9999px;
+}
+
+/* Option 4C Typography Brand Styling */
+.logo-text, .brand-display {
+  font-family: var(--font-display);
+}
+
+.brand-sub {
+  font-family: var(--font-display);
+  color: var(--fg-muted);
+  font-weight: 600;
+}
+
+.brand-main {
+  font-family: var(--font-display);
+  color: var(--fg);
+  font-weight: 700;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+  position: relative;
+}
+
+/* Rich Ambient Background — gives the glass something to refract through */
+body::after {
+  content: '';
+  position: fixed;
+  top: -20%;
+  right: -10%;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(76, 157, 176, 0.5) 0%, rgba(76, 157, 176, 0.15) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  animation: orbFloat1 20s ease-in-out infinite alternate;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  bottom: -15%;
+  left: -10%;
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(circle, rgba(76, 157, 176, 0.4) 0%, rgba(255, 210, 120, 0.15) 45%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  animation: orbFloat2 25s ease-in-out infinite alternate;
+}
+
+@keyframes orbFloat1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-120px, 80px) scale(1.2); }
+  100% { transform: translate(80px, -60px) scale(0.9); }
+}
+
+@keyframes orbFloat2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(120px, -100px) scale(1.15); }
+  100% { transform: translate(-60px, 80px) scale(0.85); }
+}
+
+.nav-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.live-dot {
+  width: 10px;
+  height: 10px;
+  background: var(--live-dot);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 12px var(--live-dot);
+}
+
+.logo-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: 0.02em;
+}
+
+.version-tag {
+  font-size: 10px;
+  color: var(--fg);
+  background: rgba(76, 157, 176, 0.15);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(76, 157, 176, 0.3);
+  font-weight: 500;
+}
+
+.nav-controls {
+  display: flex;
+  gap: 10px;
+}
+
+/* App Container */
+.app-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Hero Section - Symmetrical & Centered */
+.hero {
+  margin-bottom: 45px;
+  text-align: center;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 6vw, 4.2rem);
+  line-height: 1.1;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 12px rgba(76, 157, 176, 0.12);
+}
+
+.body-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #1D505B;
+  font-weight: 500;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Buttons — structural */
+.btn-ghost {
+  color: var(--fg);
+  padding: 8px 20px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  text-decoration: none;
+}
+
+.btn-ghost:hover {
+  color: var(--bg);
+  background: var(--fg) !important;
+  border-color: var(--fg) !important;
+}
+
+.btn-ghost.accent {
+  background: var(--fg) !important;
+  color: var(--bg);
+  border-color: var(--fg) !important;
+}
+
+.btn-ghost.accent:hover {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: var(--bg);
+  transform: translateY(-1px);
+}
+
+.btn-ghost.danger {
+  border-color: var(--danger) !important;
+  color: var(--danger);
+}
+
+.btn-ghost.danger:hover {
+  background: var(--danger) !important;
+  color: var(--bg);
+}
+
+.mcp-btn {
+  border-color: var(--live-dot);
+  color: var(--live-dot);
+  font-size: 11px;
+}
+
+/* Pipeline Matrix Wire-Flow Animation */
+.pipeline-matrix {
+  margin: 30px 0 50px;
+  width: 100%;
+}
+
+.matrix-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  gap: 8px;
+}
+
+.m-node {
+  background: rgba(255, 244, 209, 0.85);
+  border: 1.5px solid rgba(76, 157, 176, 0.35);
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(76, 157, 176, 0.12);
+}
+
+.m-node-header {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.m-node-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.m-node-desc {
+  font-size: 11px;
+  color: #1D505B;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.wire-h {
+  width: 40px;
+  height: 2px;
+  background: var(--fg);
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+@keyframes flowRight {
+  from { background-position: 0 0; }
+  to { background-position: 14px 0; }
+}
+
+/* APPLE WWDC 2025 LIQUID GLASS MATERIAL SYSTEM */
+.workbench, .settings-drawer, .m-node, .pane, .dropzone {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  background: rgba(255, 245, 220, 0.35) !important;
+  backdrop-filter: blur(24px) saturate(180%) brightness(108%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(108%) !important;
+
+  border: 2px solid rgba(255, 255, 255, 0.85) !important;
+  border-radius: var(--radius-lg);
+
+  box-shadow:
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 1),
+    inset 0 0 30px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -2px 12px 0 rgba(14, 43, 50, 0.12),
+    inset 2px 0 8px 0 rgba(255, 255, 255, 0.4),
+    inset -2px 0 8px 0 rgba(255, 255, 255, 0.4),
+    0 8px 32px -4px rgba(14, 43, 50, 0.2),
+    0 2px 8px -2px rgba(14, 43, 50, 0.1) !important;
+
+  transition: box-shadow 0.3s ease, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+nav {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 60px;
+  isolation: isolate;
+  background: rgba(255, 245, 220, 0.45) !important;
+  backdrop-filter: blur(32px) saturate(200%) brightness(110%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(110%) !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow:
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 8px 0 rgba(14, 43, 50, 0.06),
+    0 4px 24px -2px rgba(14, 43, 50, 0.15) !important;
+}
+
+.btn-ghost, .tab-btn {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: rgba(255, 245, 215, 0.5) !important;
+  backdrop-filter: blur(24px) saturate(200%) brightness(112%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(200%) brightness(112%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.65) !important;
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 4px 0 rgba(14, 43, 50, 0.08),
+    0 4px 12px -2px rgba(14, 43, 50, 0.1) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-ghost:hover, .tab-btn:hover {
+  background: rgba(255, 248, 225, 0.7) !important;
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 6px 0 rgba(14, 43, 50, 0.12),
+    0 8px 24px -4px rgba(14, 43, 50, 0.2) !important;
+  transform: translateY(-1px);
+}
+
+.workbench:hover, .m-node:hover, .pane:hover {
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.95),
+    inset 0 0 24px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -2px 10px 0 rgba(14, 43, 50, 0.18),
+    0 12px 44px -6px rgba(14, 43, 50, 0.24),
+    0 4px 10px -2px rgba(14, 43, 50, 0.1) !important;
+  transform: translateY(-1px);
+}
+
+.workbench::before, .settings-drawer::before, .pane::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.25) 45%,
+    rgba(255, 255, 255, 0.08) 55%,
+    transparent 60%
+  );
+  animation: liquidSheen 12s ease-in-out infinite;
+}
+
+.m-node::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.2) 48%,
+    rgba(255, 255, 255, 0.05) 52%,
+    transparent 65%
+  );
+  animation: liquidSheen 15s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+@keyframes liquidSheen {
+  0%, 100% { transform: translateX(-100%); opacity: 0; }
+  40% { transform: translateX(0%); opacity: 1; }
+  60% { transform: translateX(0%); opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+.liquid-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(255, 255, 255, 0.2) 40%,
+    transparent 70%
+  );
+  transform: scale(0);
+  animation: liquidRippleWave 0.7s cubic-bezier(0.2, 0.6, 0.4, 1);
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes liquidRippleWave {
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.settings-drawer {
+  padding: 26px;
+  margin-bottom: 30px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.settings-drawer.hidden {
+  display: none;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(14, 43, 50, 0.1);
+  padding-bottom: 12px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--fg);
+  transition: transform 0.2s;
+}
+
+.close-btn:hover {
+  transform: scale(1.15);
+}
+
+.drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.setting-title {
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fg);
+}
+
+.setting-desc {
+  font-size: 11px;
+  color: #1D505B;
+}
+
+.text-input, .select-input {
+  width: 100%;
+  padding: 11px 14px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1.5px solid rgba(76, 157, 176, 0.3);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: all 0.2s;
+  backdrop-filter: blur(6px);
+}
+
+.text-input:focus, .select-input:focus {
+  border-color: var(--fg);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 3px rgba(76, 157, 176, 0.15);
+}
+
+.workbench {
+  background: rgba(255, 244, 209, 0.85);
+  border: 1.5px solid rgba(76, 157, 176, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 20px 50px -10px rgba(76, 157, 176, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.input-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(76, 157, 176, 0.2);
+  padding-bottom: 18px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1.5px solid rgba(76, 157, 176, 0.3);
+  color: #2E6572;
+  padding: 9px 22px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(76, 157, 176, 0.08);
+}
+
+.tab-btn:hover {
+  border-color: var(--fg);
+  color: var(--fg);
+  background: rgba(255, 255, 255, 0.85);
+  transform: translateY(-1px);
+}
+
+.tab-btn.active {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+  box-shadow: 0 6px 18px rgba(76, 157, 176, 0.35);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.dropzone {
+  border: 2px dashed rgba(76, 157, 176, 0.45);
+  padding: 55px 24px;
+  text-align: center;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 235, 175, 0.4) 100%);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 2px 12px rgba(76, 157, 176, 0.06), 0 8px 24px rgba(76, 157, 176, 0.08);
+}
+
+.dropzone:hover, .dropzone.dragover {
+  border-color: var(--fg);
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(76, 157, 176, 0.2);
+}
+
+.dropzone-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.dropzone-heading {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.zero-api-badge {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--live-dot);
+  background: var(--tag-bg);
+  border: 1px solid var(--live-dot);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 12px;
+}
+
+.dropzone-sub {
+  font-size: 11px;
+  color: var(--fg-muted);
+  max-width: 600px;
+  margin: 0 auto 20px;
+}
+
+.preset-pills {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.preset-btn {
+  background: var(--tag-bg);
+  color: var(--tag-fg);
+  border: 1px solid var(--fg-faint);
+  padding: 5px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  transition: all 0.2s;
+}
+
+.preset-btn:hover {
+  border-color: var(--fg);
+  color: var(--fg);
+}
+
+.batch-queue {
+  margin-top: 24px;
+  border-top: 1px solid var(--fg-faint);
+  padding-top: 20px;
+}
+
+.batch-queue.hidden { display: none; }
+
+.batch-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.batch-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.batch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.batch-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg);
+  border: 1px solid var(--fg-faint);
+  padding: 10px 14px;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.batch-item-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.item-status {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--fg-faint);
+}
+
+.item-status.pending { color: var(--warning); border-color: var(--warning); }
+.item-status.success { color: var(--live-dot); border-color: var(--live-dot); }
+.item-status.error { color: var(--danger); border-color: var(--danger); }
+
+.url-input-container, .text-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+}
+
+.code-area {
+  width: 100%;
+  min-height: 180px;
+  background: var(--bg);
+  border: 1px solid var(--fg-faint);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 14px;
+  outline: none;
+  resize: vertical;
+  border-radius: var(--radius-sm);
+}
+
+.text-tab-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--tag-bg);
+  border: 1px solid var(--fg-faint);
+  padding: 12px 16px;
+  margin-top: 20px;
+  border-radius: var(--radius-md);
+}
+
+.status-bar.hidden { display: none; }
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--fg-faint);
+  border-top-color: var(--fg);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.status-text {
+  font-size: 12px;
+  color: var(--fg);
+}
+
+.output-section {
+  margin-top: 30px;
+  border-top: 1px solid var(--fg-faint);
+  padding-top: 24px;
+}
+
+.output-section.hidden { display: none; }
+
+.output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.output-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.doc-title-badge {
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid rgba(76, 157, 176, 0.35);
+  color: var(--fg);
+}
+
+.output-stats {
+  display: flex;
+  gap: 8px;
+}
+
+.stat-pill {
+  font-size: 11px;
+  color: #2E6572;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid rgba(76, 157, 176, 0.25);
+  backdrop-filter: blur(8px);
+}
+
+.stat-pill.accent-pill {
+  border-color: var(--accent);
+  color: var(--fg);
+  background: rgba(76, 157, 176, 0.15);
+}
+
+.output-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.split-view {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1.5px solid rgba(76, 157, 176, 0.3);
+  border-radius: var(--radius-md);
+  height: 520px;
+  overflow: hidden;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 10px 30px rgba(76, 157, 176, 0.1);
+}
+
+.pane-bar {
+  padding: 12px 16px;
+  border-bottom: 1.5px solid rgba(76, 157, 176, 0.25);
+  background: rgba(255, 244, 209, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+.markdown-editor {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  padding: 16px;
+  outline: none;
+  resize: none;
+}
+
+.markdown-preview {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.markdown-preview h1, .markdown-preview h2, .markdown-preview h3 {
+  font-family: var(--font-display);
+  margin-top: 18px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.markdown-preview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+}
+
+.markdown-preview th, .markdown-preview td {
+  border: 1px solid var(--fg-faint);
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.markdown-preview th {
+  background: var(--tag-bg);
+}
+
+.markdown-preview code {
+  font-family: var(--font-mono);
+  background: var(--tag-bg);
+  padding: 2px 5px;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+  color: var(--fg);
+}
+
+.markdown-preview pre code {
+  display: block;
+  padding: 14px;
+  overflow-x: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--fg-faint);
+  border-radius: var(--radius-sm);
+}
+
+/* Syntax Highlighting */
+.hljs-keyword, .hljs-selector-tag, .hljs-subst { font-weight: 700; color: var(--fg); }
+.hljs-string, .hljs-title, .hljs-section, .hljs-attribute, .hljs-literal, .hljs-type { color: var(--fg); opacity: 0.85; }
+.hljs-comment, .hljs-quote, .hljs-meta { color: var(--fg-muted); font-style: italic; }
+.hljs-number, .hljs-regexp, .hljs-link { color: var(--fg); font-weight: 500; }
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--fg-faint);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--fg-muted);
+}
+
+/* Logs Terminal */
+.logs-container {
+  margin-top: 40px;
+  border-top: 1px solid var(--fg-faint);
+  padding-top: 20px;
+}
+
+.logs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.text-btn {
+  background: none;
+  border: none;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.text-btn:hover { color: var(--fg); }
+
+.logs-window {
+  background: var(--bg-card);
+  border: 1px solid var(--fg-faint);
+  padding: 14px 18px;
+  max-height: 180px;
+  overflow-y: auto;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  border-radius: var(--radius-md);
+}
+
+.log-line.info { color: var(--fg-muted); }
+.log-line.success { color: var(--live-dot); }
+.log-line.error { color: var(--danger); }
+
+/* App Footer Credits */
+.app-footer {
+  margin-top: 50px;
+  padding-top: 24px;
+  border-top: 1px solid var(--fg-faint);
+  text-align: center;
+}
+
+.footer-text {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+
+.footer-link {
+  color: var(--fg);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid var(--fg-faint);
+  transition: opacity 0.2s;
+}
+
+.footer-link:hover {
+  opacity: 0.8;
+  border-bottom-color: var(--fg);
+}
+
+.mobile-nav-bar {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .matrix-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .wire-h {
+    width: 2px;
+    height: 20px;
+    background: var(--fg-faint);
+    opacity: 0.8;
+  }
+  @keyframes flowDown {
+    from { background-position: 0 0; }
+    to { background-position: 0 14px; }
+  }
+  .m-node {
+    width: 100%;
+  }
+  .split-view {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .drawer-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 60px;
+  }
+  .nav-controls {
+    display: none;
+  }
+  .mobile-nav-bar {
+    position: fixed;
+    bottom: 12px;
+    left: 16px;
+    right: 16px;
+    height: 54px;
+    background: var(--bg-card);
+    border: 1px solid var(--fg-faint);
+    border-radius: var(--radius-pill);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .mobile-nav-btn {
+    background: none;
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+    padding: 8px 16px;
+    min-height: 40px;
+    cursor: pointer;
+    border-radius: var(--radius-pill);
+  }
+  .mobile-nav-btn.active {
+    color: var(--fg);
+    font-weight: 500;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after,
+  .workbench::before, .settings-drawer::before,
+  .pane::before, .m-node::before,
+  .liquid-ripple {
+    animation: none !important;
+  }
+}
+
+.workbench, .settings-drawer, .m-node, .pane, .dropzone, nav {
+  will-change: backdrop-filter, box-shadow;
+}
+  </style>
 </head>
 <body>
-  <!-- SVG Liquid Glass Refraction & Displacement Definitions -->
-  <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" aria-hidden="true">
-    <defs>
-      <!-- Primary Liquid Glass Refraction Filter -->
-      <filter id="liquidLens" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
-        <!-- Organic noise for displacement -->
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="4" seed="3" result="noise" />
-        <!-- Displace source through the noise to create refraction warp -->
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G" result="refracted" />
-        <!-- Slight blur to soften refraction edges like real glass -->
-        <feGaussianBlur in="refracted" stdDeviation="0.6" result="softRefract" />
-        <!-- Blend refracted layer back with original for subtlety -->
-        <feBlend in="SourceGraphic" in2="softRefract" mode="normal" result="blended" />
-        <!-- Boost contrast slightly to simulate glass clarity -->
-        <feComponentTransfer in="blended">
-          <feFuncR type="linear" slope="1.08" intercept="-0.02" />
-          <feFuncG type="linear" slope="1.08" intercept="-0.02" />
-          <feFuncB type="linear" slope="1.08" intercept="-0.02" />
-        </feComponentTransfer>
-      </filter>
-
-      <!-- Edge Glow Filter for concentric rim lighting -->
-      <filter id="liquidEdgeGlow" x="-5%" y="-5%" width="110%" height="110%">
-        <feMorphology in="SourceAlpha" operator="dilate" radius="2" result="expanded" />
-        <feGaussianBlur in="expanded" stdDeviation="4" result="glow" />
-        <feFlood flood-color="rgba(255,255,255,0.6)" result="glowColor" />
-        <feComposite in="glowColor" in2="glow" operator="in" result="coloredGlow" />
-        <feMerge>
-          <feMergeNode in="coloredGlow" />
-          <feMergeNode in="SourceGraphic" />
-        </feMerge>
-      </filter>
-    </defs>
-  </svg>
-
   <!-- Header / Navigation -->
   <nav>
     <div class="nav-container">
@@ -247,6 +1305,7 @@
             <div id="markdownPreview" class="markdown-preview"></div>
           </div>
         </div>
+      </div>
     </section>
 
     <!-- App Footer with Credits -->
@@ -268,6 +1327,479 @@
     <button id="mobileSettingsBtn" class="mobile-nav-btn">⚙️ SETTINGS</button>
   </div>
 
-  <script src="app.js"></script>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const dropzone = document.getElementById("dropzone");
+  const fileInput = document.getElementById("fileInput");
+  const batchQueue = document.getElementById("batchQueue");
+  const batchList = document.getElementById("batchList");
+  const batchCountLabel = document.getElementById("batchCountLabel");
+  const clearBatchBtn = document.getElementById("clearBatchBtn");
+  const convertBatchZipBtn = document.getElementById("convertBatchZipBtn");
+
+  const urlInput = document.getElementById("urlInput");
+  const convertUrlBtn = document.getElementById("convertUrlBtn");
+
+  const rawTextInput = document.getElementById("rawTextInput");
+  const textExtHint = document.getElementById("textExtHint");
+  const convertTextBtn = document.getElementById("convertTextBtn");
+
+  const statusBar = document.getElementById("statusBar");
+  const statusText = document.getElementById("statusText");
+
+  const outputSection = document.getElementById("outputSection");
+  const docTitleBadge = document.getElementById("docTitleBadge");
+  const charCountEl = document.getElementById("charCount");
+  const wordCountEl = document.getElementById("wordCount");
+  const tokenCountEl = document.getElementById("tokenCount");
+
+  const markdownSource = document.getElementById("markdownSource");
+  const markdownPreview = document.getElementById("markdownPreview");
+  const copyMdBtn = document.getElementById("copyMdBtn");
+  const downloadMdBtn = document.getElementById("downloadMdBtn");
+
+  const logWindow = document.getElementById("logWindow");
+  const clearLogsBtn = document.getElementById("clearLogsBtn");
+
+  const settingsToggleBtn = document.getElementById("settingsToggleBtn");
+  const closeSettingsBtn = document.getElementById("closeSettingsBtn");
+  const settingsDrawer = document.getElementById("settingsDrawer");
+
+  const enablePluginsCheckbox = document.getElementById("enablePluginsCheckbox");
+  const keepDataUrisCheckbox = document.getElementById("keepDataUrisCheckbox");
+  const llmProviderSelect = document.getElementById("llmProviderSelect");
+  const openaiApiKeyInput = document.getElementById("openaiApiKeyInput");
+  const llmModelInput = document.getElementById("llmModelInput");
+  const docintelEndpointInput = document.getElementById("docintelEndpointInput");
+  const cuEndpointInput = document.getElementById("cuEndpointInput");
+
+  const tabBtns = document.querySelectorAll(".tab-btn, .mobile-nav-btn[data-tab]");
+  const tabContents = document.querySelectorAll(".tab-content");
+
+  let queueFiles = [];
+  let currentActiveFilename = "converted.md";
+
+  if (typeof marked !== "undefined") {
+    marked.setOptions({
+      highlight: function (code, lang) {
+        if (typeof hljs !== "undefined" && lang && hljs.getLanguage(lang)) {
+          return hljs.highlight(code, { language: lang }).value;
+        }
+        return code;
+      },
+      gfm: true,
+      breaks: true
+    });
+  }
+
+  function log(msg, type = "info") {
+    if (!logWindow) return;
+    const line = document.createElement("div");
+    line.className = `log-line ${type}`;
+    const timestamp = new Date().toLocaleTimeString();
+    line.textContent = `[${timestamp}] ${msg}`;
+    logWindow.appendChild(line);
+    logWindow.scrollTop = logWindow.scrollHeight;
+  }
+
+  if (clearLogsBtn) {
+    clearLogsBtn.addEventListener("click", () => {
+      if (logWindow) logWindow.innerHTML = "";
+      log("Logs cleared.", "info");
+    });
+  }
+
+  function toggleSettings() {
+    settingsDrawer.classList.toggle("hidden");
+  }
+  settingsToggleBtn.addEventListener("click", toggleSettings);
+  closeSettingsBtn.addEventListener("click", toggleSettings);
+  const mobileSettingsBtn = document.getElementById("mobileSettingsBtn");
+  if (mobileSettingsBtn) mobileSettingsBtn.addEventListener("click", toggleSettings);
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const targetTab = btn.getAttribute("data-tab");
+      if (!targetTab) return;
+
+      tabBtns.forEach(b => b.classList.remove("active"));
+      tabContents.forEach(c => c.classList.remove("active"));
+
+      document.querySelectorAll(`[data-tab="${targetTab}"]`).forEach(b => b.classList.add("active"));
+      const contentEl = document.getElementById(targetTab);
+      if (contentEl) contentEl.classList.add("active");
+    });
+  });
+
+  dropzone.addEventListener("click", () => fileInput.click());
+
+  dropzone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropzone.classList.add("dragover");
+  });
+
+  dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
+
+  dropzone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropzone.classList.remove("dragover");
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFiles(Array.from(e.dataTransfer.files));
+    }
+  });
+
+  fileInput.addEventListener("change", (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      handleFiles(Array.from(e.target.files));
+    }
+  });
+
+  function handleFiles(files) {
+    queueFiles = queueFiles.concat(files);
+    updateBatchQueueUI();
+
+    if (files.length === 1) {
+      log(`Selected file: ${files[0].name}. Initiating single conversion...`, "info");
+      convertSingleFile(files[0]);
+    } else {
+      log(`Added ${files.length} files to batch queue. Total: ${queueFiles.length}.`, "info");
+    }
+  }
+
+  function updateBatchQueueUI() {
+    if (queueFiles.length === 0) {
+      batchQueue.classList.add("hidden");
+      return;
+    }
+
+    batchQueue.classList.remove("hidden");
+    batchCountLabel.textContent = `BATCH QUEUE (${queueFiles.length} FILES)`;
+    batchList.innerHTML = "";
+
+    queueFiles.forEach((file, index) => {
+      const item = document.createElement("div");
+      item.className = "batch-item";
+      const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+      item.innerHTML = `
+        <div class="batch-item-info">
+          <span class="item-status pending">READY</span>
+          <strong>${escapeHtml(file.name)}</strong>
+          <span class="muted">(${sizeMb} MB)</span>
+        </div>
+        <button class="text-btn" data-index="${index}">&times; Remove</button>
+      `;
+      batchList.appendChild(item);
+    });
+
+    batchList.querySelectorAll("button[data-index]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const idx = parseInt(e.target.getAttribute("data-index"));
+        queueFiles.splice(idx, 1);
+        updateBatchQueueUI();
+      });
+    });
+  }
+
+  clearBatchBtn.addEventListener("click", () => {
+    queueFiles = [];
+    updateBatchQueueUI();
+    log("Cleared batch queue.", "info");
+  });
+
+  async function convertSingleFile(file) {
+    showStatus(`Converting ${file.name} through MarkItDown engine...`);
+    log(`Starting stream conversion for ${file.name}...`, "info");
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("enable_plugins", enablePluginsCheckbox.checked);
+    formData.append("keep_data_uris", keepDataUrisCheckbox.checked);
+    if (llmProviderSelect && llmProviderSelect.value) formData.append("llm_provider", llmProviderSelect.value);
+
+    if (openaiApiKeyInput && openaiApiKeyInput.value) formData.append("openai_api_key", openaiApiKeyInput.value);
+    if (llmModelInput && llmModelInput.value) formData.append("llm_model", llmModelInput.value);
+    if (docintelEndpointInput && docintelEndpointInput.value) formData.append("docintel_endpoint", docintelEndpointInput.value);
+    if (cuEndpointInput && cuEndpointInput.value) formData.append("cu_endpoint", cuEndpointInput.value);
+
+    try {
+      const resp = await fetch("/api/convert/file", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!resp.ok) {
+        const errData = await resp.json();
+        throw new Error(errData.detail || "Server error");
+      }
+
+      const data = await resp.json();
+      currentActiveFilename = `${file.name.split('.')[0]}.md`;
+      displayOutput(data.markdown, data.title || file.name, data.char_count, data.word_count, data.estimated_tokens);
+      log(`Successfully converted ${file.name} (${data.char_count} chars).`, "success");
+    } catch (err) {
+      log(`Error converting ${file.name}: ${err.message}`, "error");
+      alert(`Conversion error: ${err.message}`);
+    } finally {
+      hideStatus();
+    }
+  }
+
+  convertUrlBtn.addEventListener("click", async () => {
+    const url = urlInput.value.trim();
+    if (!url) return alert("Please enter a valid URL.");
+
+    showStatus(`Fetching & converting URI: ${url}...`);
+    log(`Sending URL convert request for ${url}...`, "info");
+
+    try {
+      const resp = await fetch("/api/convert/url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: url,
+          enable_plugins: enablePluginsCheckbox.checked,
+          keep_data_uris: keepDataUrisCheckbox.checked,
+          openai_api_key: openaiApiKeyInput.value || null,
+          llm_model: llmModelInput.value || "gpt-4o"
+        })
+      });
+
+      if (!resp.ok) {
+        const errData = await resp.json();
+        throw new Error(errData.detail || "URL conversion failed");
+      }
+
+      const data = await resp.json();
+      currentActiveFilename = "web_converted.md";
+      displayOutput(data.markdown, data.title || url, data.char_count, data.word_count, data.estimated_tokens);
+      log(`URL successfully converted (${data.char_count} chars).`, "success");
+    } catch (err) {
+      log(`URL conversion error: ${err.message}`, "error");
+      alert(`URL error: ${err.message}`);
+    } finally {
+      hideStatus();
+    }
+  });
+
+  convertTextBtn.addEventListener("click", async () => {
+    const text = rawTextInput.value;
+    if (!text.trim()) return alert("Please paste some HTML or text snippet.");
+
+    showStatus("Converting text snippet to Markdown...");
+    log("Sending raw text conversion request...", "info");
+
+    try {
+      const resp = await fetch("/api/convert/text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: text,
+          extension_hint: textExtHint.value,
+          enable_plugins: enablePluginsCheckbox.checked
+        })
+      });
+
+      if (!resp.ok) {
+        const errData = await resp.json();
+        throw new Error(errData.detail || "Text conversion failed");
+      }
+
+      const data = await resp.json();
+      currentActiveFilename = "snippet.md";
+      displayOutput(data.markdown, "Text Snippet", data.char_count, data.word_count, data.estimated_tokens);
+      log(`Text snippet converted successfully (${data.char_count} chars).`, "success");
+    } catch (err) {
+      log(`Text conversion error: ${err.message}`, "error");
+      alert(`Text error: ${err.message}`);
+    } finally {
+      hideStatus();
+    }
+  });
+
+  convertBatchZipBtn.addEventListener("click", async () => {
+    if (queueFiles.length === 0) return alert("Batch queue is empty.");
+
+    showStatus(`Processing batch of ${queueFiles.length} files into ZIP archive...`);
+    log(`Starting batch ZIP conversion for ${queueFiles.length} files...`, "info");
+
+    const formData = new FormData();
+    queueFiles.forEach(f => formData.append("files", f));
+    formData.append("enable_plugins", enablePluginsCheckbox.checked);
+    formData.append("keep_data_uris", keepDataUrisCheckbox.checked);
+    if (openaiApiKeyInput.value) formData.append("openai_api_key", openaiApiKeyInput.value);
+
+    try {
+      const resp = await fetch("/api/convert/batch", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!resp.ok) throw new Error("Batch conversion server error");
+
+      const blob = await resp.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = downloadUrl;
+      a.download = "markitdowninweb_batch_export.zip";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+
+      log(`Batch ZIP exported successfully (${queueFiles.length} files).`, "success");
+    } catch (err) {
+      log(`Batch conversion error: ${err.message}`, "error");
+      alert(`Batch error: ${err.message}`);
+    } finally {
+      hideStatus();
+    }
+  });
+
+  document.querySelectorAll(".preset-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const preset = btn.getAttribute("data-preset");
+      if (preset === "sample.pdf") {
+        urlInput.value = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+        document.querySelector('[data-tab="urlTab"]').click();
+        log("Loaded Preset: Sample PDF URL.", "info");
+      } else if (preset === "table.xlsx" || preset === "doc.docx" || preset === "slide.pptx") {
+        rawTextInput.value = "<h1>Sample Data Table</h1><table><tr><th>Name</th><th>Role</th></tr><tr><td>Alice</td><td>Developer</td></tr><tr><td>Bob</td><td>Designer</td></tr></table>";
+        document.querySelector('[data-tab="textTab"]').click();
+        log(`Loaded Preset: ${preset} snippet mockup.`, "info");
+      }
+    });
+  });
+
+  function displayOutput(markdown, title, charCount, wordCount, tokenCount) {
+    markdownSource.value = markdown;
+
+    if (typeof marked !== "undefined") {
+      markdownPreview.innerHTML = marked.parse(markdown);
+    } else {
+      markdownPreview.textContent = markdown;
+    }
+
+    docTitleBadge.textContent = title;
+    charCountEl.textContent = charCount.toLocaleString();
+    wordCountEl.textContent = wordCount.toLocaleString();
+    tokenCountEl.textContent = tokenCount.toLocaleString();
+
+    outputSection.classList.remove("hidden");
+    outputSection.scrollIntoView({ behavior: "smooth" });
+  }
+
+  copyMdBtn.addEventListener("click", () => {
+    if (!markdownSource.value) return;
+    navigator.clipboard.writeText(markdownSource.value).then(() => {
+      const origText = copyMdBtn.textContent;
+      copyMdBtn.textContent = "COPIED!";
+      setTimeout(() => copyMdBtn.textContent = origText, 2000);
+      log("Markdown copied to clipboard.", "info");
+    });
+  });
+
+  downloadMdBtn.addEventListener("click", () => {
+    if (!markdownSource.value) return;
+    const blob = new Blob([markdownSource.value], { type: "text/markdown;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = currentActiveFilename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    log(`Downloaded ${currentActiveFilename}.`, "info");
+  });
+
+  function showStatus(text) {
+    statusText.textContent = text;
+    statusBar.classList.remove("hidden");
+  }
+
+  function hideStatus() {
+    statusBar.classList.add("hidden");
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function initLiquidGlassEngine() {
+    const glassPanels = document.querySelectorAll('.workbench, .settings-drawer, .m-node, .dropzone, .pane, .logs-window');
+    const glassButtons = document.querySelectorAll('.btn-ghost, .tab-btn');
+
+    glassPanels.forEach(el => {
+      const specular = document.createElement('div');
+      specular.style.cssText = `
+        position: absolute; inset: 0; z-index: 2; pointer-events: none;
+        border-radius: inherit; opacity: 0;
+        transition: opacity 0.3s ease;
+        background: radial-gradient(
+          600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+          rgba(255, 255, 255, 0.35) 0%,
+          rgba(255, 255, 255, 0.1) 30%,
+          transparent 70%
+        );
+      `;
+      el.style.position = 'relative';
+      el.appendChild(specular);
+
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        specular.style.setProperty('--mouse-x', `${x}px`);
+        specular.style.setProperty('--mouse-y', `${y}px`);
+        specular.style.background = `radial-gradient(
+          600px circle at ${x}px ${y}px,
+          rgba(255, 255, 255, 0.35) 0%,
+          rgba(255, 255, 255, 0.1) 30%,
+          transparent 70%
+        )`;
+        specular.style.opacity = '1';
+      });
+
+      el.addEventListener('mouseleave', () => {
+        specular.style.opacity = '0';
+      });
+
+      el.addEventListener('click', (e) => {
+        const rect = el.getBoundingClientRect();
+        const circle = document.createElement('span');
+        const diameter = Math.max(rect.width, rect.height);
+        const radius = diameter / 2;
+
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${e.clientX - rect.left - radius}px`;
+        circle.style.top = `${e.clientY - rect.top - radius}px`;
+        circle.className = 'liquid-ripple';
+
+        const existingRipple = el.getElementsByClassName('liquid-ripple')[0];
+        if (existingRipple) existingRipple.remove();
+
+        el.appendChild(circle);
+        setTimeout(() => circle.remove(), 700);
+      });
+    });
+
+    glassButtons.forEach(el => {
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+        const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+        el.style.setProperty('--mouse-x', `${x}%`);
+        el.style.setProperty('--mouse-y', `${y}%`);
+      });
+
+      el.addEventListener('mouseleave', () => {
+        el.style.setProperty('--mouse-x', '50%');
+        el.style.setProperty('--mouse-y', '50%');
+      });
+    });
+  }
+
+  initLiquidGlassEngine();
+});
+  </script>
 </body>
 </html>
