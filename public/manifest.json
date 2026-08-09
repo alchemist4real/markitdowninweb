@@ -4,8 +4,8 @@
   "description": "Enterprise Multimodal Document & File to Markdown Conversion Lab by Microsoft MarkItDown",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0B1619",
-  "theme_color": "#0B1619",
+  "background_color": "#FFEBAF",
+  "theme_color": "#4C9DB0",
   "orientation": "any",
   "icons": [
     {

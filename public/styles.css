@@ -1,15 +1,15 @@
 :root {
   --vanilla: #FFEBAF;
   --moonstone: #4C9DB0;
-  --bg: #F4F8F9;
-  --bg-card: #FFFFFF;
-  --fg: #0C1A1D;
-  --fg-muted: #4C9DB0;
-  --fg-faint: #D4E6EA;
+  --bg: #FFEBAF;
+  --bg-card: #FFF4D1;
+  --fg: #4C9DB0;
+  --fg-muted: #387887;
+  --fg-faint: #F5DA8E;
   --accent: #4C9DB0;
   --live-dot: #4C9DB0;
-  --tag-bg: #E6F2F5;
-  --tag-fg: #0C1A1D;
+  --tag-bg: #FCE8A4;
+  --tag-fg: #4C9DB0;
   --danger: #4C9DB0;
   --warning: #4C9DB0;
   --font-display: 'Cormorant Garamond', serif;
@@ -23,17 +23,17 @@
 [data-theme="dark"] {
   --vanilla: #FFEBAF;
   --moonstone: #4C9DB0;
-  --bg: #0B1619;
-  --bg-card: #122226;
+  --bg: #4C9DB0;
+  --bg-card: #3F889A;
   --fg: #FFEBAF;
-  --fg-muted: #7CB0BD;
-  --fg-faint: #1C353B;
-  --accent: #4C9DB0;
-  --live-dot: #4C9DB0;
-  --tag-bg: #182C31;
+  --fg-muted: #FCE39C;
+  --fg-faint: #5CAEC1;
+  --accent: #FFEBAF;
+  --live-dot: #FFEBAF;
+  --tag-bg: #367988;
   --tag-fg: #FFEBAF;
-  --danger: #4C9DB0;
-  --warning: #4C9DB0;
+  --danger: #FFEBAF;
+  --warning: #FFEBAF;
 }
 
 /* Option 4C Typography Brand Styling */
@@ -286,11 +286,9 @@ nav {
 .wire-h {
   width: 40px;
   height: 2px;
-  background: linear-gradient(90deg, transparent 50%, var(--accent) 50%);
-  background-size: 14px 2px;
-  opacity: 0.6;
+  background: var(--fg-faint);
+  opacity: 0.8;
   flex-shrink: 0;
-  animation: flowRight 1s linear infinite;
 }
 
 @keyframes flowRight {
@@ -816,9 +814,8 @@ nav {
   .wire-h {
     width: 2px;
     height: 20px;
-    background: linear-gradient(180deg, transparent 50%, var(--accent) 50%);
-    background-size: 2px 14px;
-    animation: flowDown 1s linear infinite;
+    background: var(--fg-faint);
+    opacity: 0.8;
   }
   @keyframes flowDown {
     from { background-position: 0 0; }

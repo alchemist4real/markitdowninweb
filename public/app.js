@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const logWindow = document.getElementById("logWindow");
   const clearLogsBtn = document.getElementById("clearLogsBtn");
 
-  const themeToggleBtn = document.getElementById("themeToggleBtn");
   const settingsToggleBtn = document.getElementById("settingsToggleBtn");
   const closeSettingsBtn = document.getElementById("closeSettingsBtn");
   const settingsDrawer = document.getElementById("settingsDrawer");
@@ -82,18 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
       log("Logs cleared.", "info");
     });
   }
-
-  // Theme Toggle
-  themeToggleBtn.addEventListener("click", () => {
-    const isDark = document.body.getAttribute("data-theme") === "dark";
-    if (isDark) {
-      document.body.removeAttribute("data-theme");
-      log("Switched to Light theme.", "info");
-    } else {
-      document.body.setAttribute("data-theme", "dark");
-      log("Switched to Dark theme.", "info");
-    }
-  });
 
   // Settings Drawer Toggle
   function toggleSettings() {
