@@ -37,12 +37,18 @@
 }
 
 /* Option 4C Typography Brand Styling */
+.logo-text, .brand-display {
+  font-family: var(--font-display);
+}
+
 .brand-sub {
+  font-family: var(--font-display);
   color: var(--fg-muted);
   font-weight: 600;
 }
 
 .brand-main {
+  font-family: var(--font-display);
   color: var(--fg);
   font-weight: 700;
 }
@@ -116,9 +122,10 @@ nav {
 }
 
 .logo-text {
-  font-weight: 500;
-  font-size: 13px;
-  letter-spacing: 0.08em;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
 }
 
 .version-tag {
@@ -746,13 +753,39 @@ nav {
   background: var(--tag-bg);
   padding: 2px 5px;
   font-size: 12px;
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
+  color: var(--fg);
 }
 
 .markdown-preview pre code {
   display: block;
-  padding: 12px;
+  padding: 14px;
   overflow-x: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--fg-faint);
+  border-radius: var(--radius-sm);
+}
+
+/* Strict 2-Color Syntax Highlighting Overrides */
+.hljs-keyword, .hljs-selector-tag, .hljs-subst { font-weight: 700; color: var(--fg); }
+.hljs-string, .hljs-title, .hljs-section, .hljs-attribute, .hljs-literal, .hljs-type { color: var(--fg); opacity: 0.85; }
+.hljs-comment, .hljs-quote, .hljs-meta { color: var(--fg-muted); font-style: italic; }
+.hljs-number, .hljs-regexp, .hljs-link { color: var(--fg); font-weight: 500; }
+
+/* Scrollbar styling in 2 colors */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--fg-faint);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--fg-muted);
 }
 
 /* Logs Terminal */
