@@ -408,84 +408,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
-  // WWDC 2025 Liquid Glass Motion & Lensing Engine (carolhsiaoo/awesome-liquid-glass)
-  function initLiquidGlassEngine() {
-    const glassPanels = document.querySelectorAll('.workbench, .settings-drawer, .m-node, .dropzone, .pane, .logs-window');
-    const glassButtons = document.querySelectorAll('.btn-ghost, .tab-btn');
-
-    // Create dynamic specular highlight overlay for each glass panel
-    glassPanels.forEach(el => {
-      // Create specular highlight layer
-      const specular = document.createElement('div');
-      specular.style.cssText = `
-        position: absolute; inset: 0; z-index: 2; pointer-events: none;
-        border-radius: inherit; opacity: 0;
-        transition: opacity 0.3s ease;
-        background: radial-gradient(
-          600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-          rgba(255, 255, 255, 0.35) 0%,
-          rgba(255, 255, 255, 0.1) 30%,
-          transparent 70%
-        );
-      `;
-      el.style.position = 'relative';
-      el.appendChild(specular);
-
-      el.addEventListener('mousemove', (e) => {
-        const rect = el.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        specular.style.setProperty('--mouse-x', `${x}px`);
-        specular.style.setProperty('--mouse-y', `${y}px`);
-        specular.style.background = `radial-gradient(
-          600px circle at ${x}px ${y}px,
-          rgba(255, 255, 255, 0.35) 0%,
-          rgba(255, 255, 255, 0.1) 30%,
-          transparent 70%
-        )`;
-        specular.style.opacity = '1';
-      });
-
-      el.addEventListener('mouseleave', () => {
-        specular.style.opacity = '0';
-      });
-
-      // Liquid Touch Ripple Effect
-      el.addEventListener('click', (e) => {
-        const rect = el.getBoundingClientRect();
-        const circle = document.createElement('span');
-        const diameter = Math.max(rect.width, rect.height);
-        const radius = diameter / 2;
-
-        circle.style.width = circle.style.height = `${diameter}px`;
-        circle.style.left = `${e.clientX - rect.left - radius}px`;
-        circle.style.top = `${e.clientY - rect.top - radius}px`;
-        circle.className = 'liquid-ripple';
-
-        const existingRipple = el.getElementsByClassName('liquid-ripple')[0];
-        if (existingRipple) existingRipple.remove();
-
-        el.appendChild(circle);
-        setTimeout(() => circle.remove(), 700);
-      });
-    });
-
-    // Simpler hover highlight for buttons
-    glassButtons.forEach(el => {
-      el.addEventListener('mousemove', (e) => {
-        const rect = el.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
-        const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
-        el.style.setProperty('--mouse-x', `${x}%`);
-        el.style.setProperty('--mouse-y', `${y}%`);
-      });
-
-      el.addEventListener('mouseleave', () => {
-        el.style.setProperty('--mouse-x', '50%');
-        el.style.setProperty('--mouse-y', '50%');
-      });
-    });
+  // OG Clean Interaction Engine
+  function initOGInteractionEngine() {
+    log("OG Clean UI Interaction Engine initialized.", "info");
   }
 
-  initLiquidGlassEngine();
+  initOGInteractionEngine();
 });
