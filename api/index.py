@@ -155,6 +155,38 @@ def convert_pdf_with_pymupdf(stream: io.BytesIO, filename: str) -> str:
     return "".join(md_parts)
 
 
+def convert_image_with_ocrspace(stream: io.BytesIO, filename: str) -> str:
+    """Free, highly reliable public OCR engine using OCR.space for images (PNG, JPG, WEBP, BMP, TIFF)."""
+    import requests
+    stream.seek(0)
+    ext = os.path.splitext(filename or "image.png")[1].lower()
+    mime_types = {
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".webp": "image/webp",
+        ".bmp": "image/bmp",
+        ".tiff": "image/tiff"
+    }
+    mime = mime_types.get(ext, "image/jpeg")
+    
+    files = {"file": (filename or "image.jpg", stream.read(), mime)}
+    res = requests.post(
+        "https://api.ocr.space/parse/image",
+        files=files,
+        data={"apikey": "K88582736488957", "isTable": "true", "detectOrientation": "true"},
+        timeout=15
+    )
+    if res.status_code == 200:
+        data = res.json()
+        if data.get("ParsedResults"):
+            parsed_text = data["ParsedResults"][0].get("ParsedText", "").strip()
+            if parsed_text:
+                title = os.path.splitext(filename or "Image")[0]
+                return f"# {title}\n\n*[Image OCR]*\n{parsed_text}\n[End OCR]*\n"
+    return ""
+
+
 @app.post("/api/convert/file")
 async def convert_file(
     file: UploadFile = File(...),
@@ -175,6 +207,26 @@ async def convert_file(
         content = await file.read()
         stream = io.BytesIO(content)
         ext = (extension_hint or os.path.splitext(file.filename or "")[1]).lower()
+
+        # Fast path for standalone images using reliable public OCR engine when no vision API key provided
+        image_exts = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tiff"}
+        if ext in image_exts and not openai_api_key:
+            try:
+                ocr_text = convert_image_with_ocrspace(stream, file.filename or "image.png")
+                if ocr_text:
+                    title = file.filename or "Image OCR"
+                    return {
+                        "success": True,
+                        "filename": file.filename,
+                        "title": title,
+                        "markdown": ocr_text,
+                        "char_count": len(ocr_text),
+                        "word_count": len(ocr_text.split()),
+                        "estimated_tokens": int(len(ocr_text.split()) * 1.33)
+                    }
+            except Exception as ocr_err:
+                print(f"Public OCR fast path notice: {ocr_err}. Falling back to standard MarkItDown...")
+                stream.seek(0)
 
         # Fast path for PDFs using PyMuPDF (fitz) when no cloud engines requested
         if ext == ".pdf" and not docintel_endpoint and not cu_endpoint and not openai_api_key:
