@@ -133,9 +133,9 @@ def get_supported_formats():
     }
 
 
-def convert_pdf_with_pymupdf(stream: io.BytesIO, filename: str) -> str:
-    """Fast, zero-API, C++ native PDF converter using PyMuPDF (fitz) capable of processing 300+ pages in < 4s."""
-    import fitz
+def convert_pdf_with_pymupdf(stream: io.BytesIO, filename: str, keep_data_uris: bool = False) -> str:
+    """Fast, layout-preserving PDF converter using PyMuPDF (fitz) that extracts text blocks and performs OCR on embedded illustrations/images in vertical page order."""
+    import fitz, base64
     stream.seek(0)
     doc = fitz.open(stream=stream.read(), filetype="pdf")
     title = doc.metadata.get("title") or os.path.splitext(filename or "Document")[0]
@@ -143,14 +143,53 @@ def convert_pdf_with_pymupdf(stream: io.BytesIO, filename: str) -> str:
     md_parts = [f"# {title}\n\n"]
     for page_num in range(len(doc)):
         page = doc[page_num]
-        md_parts.append(f"<!-- Page {page_num + 1} -->\n")
+        md_parts.append(f"<!-- Page {page_num + 1} -->\n\n")
         
-        # Extract text blocks cleanly
-        blocks = page.get_text("blocks")
-        for b in blocks:
-            text = b[4].strip()
-            if text:
-                md_parts.append(f"{text}\n\n")
+        try:
+            page_dict = page.get_text("dict")
+            blocks = page_dict.get("blocks", [])
+            # Sort blocks in vertical reading order (y0)
+            blocks.sort(key=lambda b: b["bbox"][1])
+
+            for b in blocks:
+                # Type 0: Text Block
+                if b.get("type") == 0:
+                    lines_text = []
+                    for line in b.get("lines", []):
+                        span_text = "".join([s.get("text", "") for s in line.get("spans", [])])
+                        if span_text.strip():
+                            lines_text.append(span_text.strip())
+                    if lines_text:
+                        md_parts.append("\n".join(lines_text) + "\n\n")
+
+                # Type 1: Image / Illustration Block
+                elif b.get("type") == 1:
+                    img_bytes = b.get("image")
+                    ext = b.get("ext", "png")
+                    if img_bytes:
+                        # Try free OCR on illustration image
+                        ocr_text = ""
+                        try:
+                            img_stream = io.BytesIO(img_bytes)
+                            ocr_result = convert_image_with_ocrspace(img_stream, f"page_{page_num+1}_img.{ext}")
+                            if ocr_result and "*[Image OCR]*" in ocr_result:
+                                ocr_text = ocr_result.split("*[Image OCR]*")[1].split("[End OCR]*")[0].strip()
+                        except Exception:
+                            pass
+
+                        if ocr_text:
+                            md_parts.append(f"*[Illustration / Image OCR]*\n{ocr_text}\n*[End Illustration]*\n\n")
+                        else:
+                            b64 = base64.b64encode(img_bytes).decode("ascii")
+                            if keep_data_uris:
+                                md_parts.append(f"![Illustration](data:image/{ext};base64,{b64})\n\n")
+                            else:
+                                md_parts.append(f"![Illustration](data:image/{ext};base64,{b64[:40]}...)\n\n")
+        except Exception as page_err:
+            # Fallback to plain text block extraction for page
+            plain_text = page.get_text("text")
+            if plain_text.strip():
+                md_parts.append(plain_text + "\n\n")
                 
     return "".join(md_parts)
 
@@ -231,7 +270,7 @@ async def convert_file(
         # Fast path for PDFs using PyMuPDF (fitz) when no cloud engines requested
         if ext == ".pdf" and not docintel_endpoint and not cu_endpoint and not openai_api_key:
             try:
-                markdown_text = convert_pdf_with_pymupdf(stream, file.filename or "document.pdf")
+                markdown_text = convert_pdf_with_pymupdf(stream, file.filename or "document.pdf", keep_data_uris=keep_data_uris)
                 if len(markdown_text.strip()) > 50:
                     title = file.filename or "Converted PDF"
                     return {
