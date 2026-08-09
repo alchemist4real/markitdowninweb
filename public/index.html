@@ -29,11 +29,34 @@
   <!-- SVG Liquid Glass Refraction & Displacement Definitions -->
   <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" aria-hidden="true">
     <defs>
-      <filter id="liquidLens" x="-20%" y="-20%" width="140%" height="140%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" result="noise" />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G" result="displaced" />
-        <feGaussianBlur in="displaced" stdDeviation="0.8" result="blurred" />
-        <feBlend in="SourceGraphic" in2="blurred" mode="overlay" />
+      <!-- Primary Liquid Glass Refraction Filter -->
+      <filter id="liquidLens" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+        <!-- Organic noise for displacement -->
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="4" seed="3" result="noise" />
+        <!-- Displace source through the noise to create refraction warp -->
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G" result="refracted" />
+        <!-- Slight blur to soften refraction edges like real glass -->
+        <feGaussianBlur in="refracted" stdDeviation="0.6" result="softRefract" />
+        <!-- Blend refracted layer back with original for subtlety -->
+        <feBlend in="SourceGraphic" in2="softRefract" mode="normal" result="blended" />
+        <!-- Boost contrast slightly to simulate glass clarity -->
+        <feComponentTransfer in="blended">
+          <feFuncR type="linear" slope="1.08" intercept="-0.02" />
+          <feFuncG type="linear" slope="1.08" intercept="-0.02" />
+          <feFuncB type="linear" slope="1.08" intercept="-0.02" />
+        </feComponentTransfer>
+      </filter>
+
+      <!-- Edge Glow Filter for concentric rim lighting -->
+      <filter id="liquidEdgeGlow" x="-5%" y="-5%" width="110%" height="110%">
+        <feMorphology in="SourceAlpha" operator="dilate" radius="2" result="expanded" />
+        <feGaussianBlur in="expanded" stdDeviation="4" result="glow" />
+        <feFlood flood-color="rgba(255,255,255,0.6)" result="glowColor" />
+        <feComposite in="glowColor" in2="glow" operator="in" result="coloredGlow" />
+        <feMerge>
+          <feMergeNode in="coloredGlow" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
       </filter>
     </defs>
   </svg>

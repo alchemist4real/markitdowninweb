@@ -97,18 +97,7 @@ body::before {
   100% { transform: translate(-40px, 70px) scale(0.9); }
 }
 
-/* Navigation - Glass Header */
-nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  height: 60px;
-  background: rgba(255, 235, 175, 0.75);
-  border-bottom: 1px solid rgba(76, 157, 176, 0.25);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  box-shadow: 0 4px 20px rgba(76, 157, 176, 0.08);
-}
+/* Navigation layout (glass material handled by Liquid Glass system below) */
 
 .nav-container {
   max-width: 1100px;
@@ -193,57 +182,50 @@ nav {
   margin: 0 auto;
 }
 
-/* Buttons - Glossy Liquid Glass */
+/* Buttons — structural (glass material handled by Liquid Glass system) */
 .btn-ghost {
-  border: 1.5px solid rgba(76, 157, 176, 0.4);
   color: var(--fg);
-  background: rgba(255, 255, 255, 0.4);
   padding: 8px 20px;
   font-family: var(--font-mono);
   font-weight: 600;
   font-size: 12px;
   cursor: pointer;
   letter-spacing: 0.05em;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: var(--radius-pill);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 40px;
   text-decoration: none;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 14px rgba(76, 157, 176, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .btn-ghost:hover {
-  background: var(--fg);
   color: var(--bg);
-  border-color: var(--fg);
-  box-shadow: 0 8px 22px rgba(76, 157, 176, 0.3);
-  transform: translateY(-2px);
+  background: var(--fg) !important;
+  border-color: var(--fg) !important;
 }
 
 .btn-ghost.accent {
-  background: var(--fg);
+  background: var(--fg) !important;
   color: var(--bg);
-  border-color: var(--fg);
+  border-color: var(--fg) !important;
 }
 
 .btn-ghost.accent:hover {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
   color: var(--bg);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .btn-ghost.danger {
-  border-color: var(--danger);
+  border-color: var(--danger) !important;
   color: var(--danger);
 }
 
 .btn-ghost.danger:hover {
-  background: var(--danger);
-  color: #ffffff;
+  background: var(--danger) !important;
+  color: var(--bg);
 }
 
 .mcp-btn {
@@ -317,78 +299,179 @@ nav {
   to { background-position: 14px 0; }
 }
 
-/* True Liquid Glass Specular Rim Refraction & Mouse Lensing (Apple WWDC 2025 Liquid Glass UI) */
-.workbench, .settings-drawer, .m-node, .pane, nav, .dropzone, .btn-ghost, .tab-btn {
+/* ============================================
+   APPLE WWDC 2025 LIQUID GLASS MATERIAL SYSTEM
+   3-Layer Architecture:
+     Layer 1: Translucent tinted glass body (backdrop-filter + SVG refraction)
+     Layer 2: Concentric volumetric border edges (multi-ring inset shadows)
+     Layer 3: Dynamic specular surface highlights (::after pseudo for sheen)
+   ============================================ */
+
+/* Layer 1: Glass Body - Translucent Refraction */
+.workbench, .settings-drawer, .m-node, .pane, .dropzone {
   --mouse-x: 50%;
   --mouse-y: 50%;
   position: relative;
   overflow: hidden;
-  background: radial-gradient(
-    circle at var(--mouse-x) var(--mouse-y),
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(255, 240, 192, 0.88) 55%,
-    rgba(242, 222, 160, 0.8) 100%
-  ) !important;
-  backdrop-filter: blur(32px) contrast(135%) brightness(110%) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(32px) contrast(135%) brightness(110%) saturate(200%) !important;
-  border: 2px solid rgba(255, 255, 255, 0.95) !important;
-  box-shadow: 
-    inset 0 3px 5px 0 rgba(255, 255, 255, 1),
-    inset 0 -4px 10px 0 rgba(14, 43, 50, 0.35),
-    inset 4px 0 8px 0 rgba(255, 255, 255, 0.85),
-    inset -4px 0 8px 0 rgba(14, 43, 50, 0.25),
-    0 28px 60px -15px rgba(14, 43, 50, 0.32) !important;
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  isolation: isolate;
+  contain: layout style;
+
+  /* Translucent tinted glass — NOT opaque */
+  background: rgba(255, 240, 200, 0.45) !important;
+
+  /* Real optical blur refraction */
+  backdrop-filter: blur(40px) saturate(220%) brightness(115%) contrast(110%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(220%) brightness(115%) contrast(110%) !important;
+
+  /* Apply SVG displacement refraction filter */
+  filter: url(#liquidLens);
+
+  /* Layer 2: Concentric volumetric border rings — Apple's signature thick glass edge */
+  border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
+  outline: 1.5px solid rgba(14, 43, 50, 0.06);
+  outline-offset: -3px;
+  box-shadow:
+    /* Inner concentric ring 1 — bright top edge (specular rim) */
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    /* Inner concentric ring 2 — soft diffuse inner glow */
+    inset 0 0 20px 0 rgba(255, 255, 255, 0.35),
+    /* Inner concentric ring 3 — bottom edge depth shadow */
+    inset 0 -2px 8px 0 rgba(14, 43, 50, 0.15),
+    /* Outer volumetric depth shadow — the glass "floats" */
+    0 8px 32px -4px rgba(14, 43, 50, 0.18),
+    0 2px 6px -1px rgba(14, 43, 50, 0.08) !important;
+
+  border-radius: var(--radius-lg);
+  transition: box-shadow 0.3s ease, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Liquid Click Ripple Expansion */
+/* Layer 1 variant: Nav bar — thinner glass, horizontal */
+nav {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 60px;
+  isolation: isolate;
+  background: rgba(255, 240, 200, 0.55) !important;
+  backdrop-filter: blur(48px) saturate(240%) brightness(112%) !important;
+  -webkit-backdrop-filter: blur(48px) saturate(240%) brightness(112%) !important;
+  filter: url(#liquidLens);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.65) !important;
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 6px 0 rgba(14, 43, 50, 0.06),
+    0 4px 24px -2px rgba(14, 43, 50, 0.12) !important;
+}
+
+/* Layer 1 variant: Small interactive glass elements */
+.btn-ghost, .tab-btn {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: rgba(255, 245, 215, 0.5) !important;
+  backdrop-filter: blur(24px) saturate(200%) brightness(112%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(200%) brightness(112%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.65) !important;
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 4px 0 rgba(14, 43, 50, 0.08),
+    0 4px 12px -2px rgba(14, 43, 50, 0.1) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-ghost:hover, .tab-btn:hover {
+  background: rgba(255, 248, 225, 0.7) !important;
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 6px 0 rgba(14, 43, 50, 0.12),
+    0 8px 24px -4px rgba(14, 43, 50, 0.2) !important;
+  transform: translateY(-1px);
+}
+
+/* Hover lift for glass panels */
+.workbench:hover, .m-node:hover, .pane:hover {
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.95),
+    inset 0 0 24px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -2px 10px 0 rgba(14, 43, 50, 0.18),
+    0 12px 44px -6px rgba(14, 43, 50, 0.24),
+    0 4px 10px -2px rgba(14, 43, 50, 0.1) !important;
+  transform: translateY(-1px);
+}
+
+/* Layer 3: Dynamic specular surface sheen — subtle, slow, elegant */
+.workbench::before, .settings-drawer::before, .pane::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.25) 45%,
+    rgba(255, 255, 255, 0.08) 55%,
+    transparent 60%
+  );
+  animation: liquidSheen 12s ease-in-out infinite;
+}
+
+/* Subtle sheen on m-nodes */
+.m-node::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.2) 48%,
+    rgba(255, 255, 255, 0.05) 52%,
+    transparent 65%
+  );
+  animation: liquidSheen 15s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+@keyframes liquidSheen {
+  0%, 100% { transform: translateX(-100%); opacity: 0; }
+  40% { transform: translateX(0%); opacity: 1; }
+  60% { transform: translateX(0%); opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+/* Liquid Click Ripple — softer, more realistic */
 .liquid-ripple {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(76, 157, 176, 0.25) 60%, transparent 100%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(255, 255, 255, 0.2) 40%,
+    transparent 70%
+  );
   transform: scale(0);
-  animation: liquidRippleWave 0.6s cubic-bezier(0, 0.2, 0.8, 1);
+  animation: liquidRippleWave 0.7s cubic-bezier(0.2, 0.6, 0.4, 1);
   pointer-events: none;
   z-index: 10;
 }
 
 @keyframes liquidRippleWave {
   to {
-    transform: scale(2.8);
+    transform: scale(3);
     opacity: 0;
   }
 }
 
-/* Dynamic Liquid Light Sheen Animation */
-.workbench::before, .settings-drawer::before, .m-node::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent 45%,
-    rgba(255, 255, 255, 0.35) 50%,
-    transparent 55%
-  );
-  pointer-events: none;
-  transform: rotate(25deg);
-  animation: liquidFluidSheen 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-@keyframes liquidFluidSheen {
-  0% { transform: translateX(-120%) rotate(25deg); }
-  25%, 100% { transform: translateX(120%) rotate(25deg); }
-}
-
-/* Settings Drawer - Glass Card */
+/* Settings Drawer - Glass Card (structural) */
 .settings-drawer {
-  background: rgba(255, 244, 209, 0.82);
   padding: 26px;
   margin-bottom: 30px;
-  border-radius: var(--radius-lg);
   animation: fadeIn 0.3s ease-out;
 }
 
@@ -401,7 +484,7 @@ nav {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  border-bottom: 1px solid rgba(76, 157, 176, 0.2);
+  border-bottom: 1px solid rgba(14, 43, 50, 0.1);
   padding-bottom: 12px;
 }
 
@@ -1032,4 +1115,22 @@ nav {
     color: var(--fg);
     font-weight: 500;
   }
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after,
+  .workbench::before, .settings-drawer::before,
+  .pane::before, .m-node::before,
+  .liquid-ripple {
+    animation: none !important;
+  }
+  .workbench, .settings-drawer, .m-node, .pane, .dropzone, nav {
+    filter: none !important;
+  }
+}
+
+/* GPU Performance Hints */
+.workbench, .settings-drawer, .m-node, .pane, .dropzone, nav {
+  will-change: filter, backdrop-filter;
 }

@@ -410,26 +410,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // WWDC 2025 Liquid Glass Motion & Lensing Engine (carolhsiaoo/awesome-liquid-glass)
   function initLiquidGlassEngine() {
-    const glassElements = document.querySelectorAll('.workbench, .settings-drawer, .m-node, .btn-ghost, .tab-btn, .dropzone, .pane, .logs-window');
-    
-    glassElements.forEach(el => {
+    const glassPanels = document.querySelectorAll('.workbench, .settings-drawer, .m-node, .dropzone, .pane, .logs-window');
+    const glassButtons = document.querySelectorAll('.btn-ghost, .tab-btn');
+
+    // Create dynamic specular highlight overlay for each glass panel
+    glassPanels.forEach(el => {
+      // Create specular highlight layer
+      const specular = document.createElement('div');
+      specular.style.cssText = `
+        position: absolute; inset: 0; z-index: 2; pointer-events: none;
+        border-radius: inherit; opacity: 0;
+        transition: opacity 0.3s ease;
+        background: radial-gradient(
+          600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+          rgba(255, 255, 255, 0.35) 0%,
+          rgba(255, 255, 255, 0.1) 30%,
+          transparent 70%
+        );
+      `;
+      el.style.position = 'relative';
+      el.appendChild(specular);
+
       el.addEventListener('mousemove', (e) => {
         const rect = el.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        const px = ((x / rect.width) * 100).toFixed(1);
-        const py = ((y / rect.height) * 100).toFixed(1);
-        
-        el.style.setProperty('--mouse-x', `${px}%`);
-        el.style.setProperty('--mouse-y', `${py}%`);
+        specular.style.setProperty('--mouse-x', `${x}px`);
+        specular.style.setProperty('--mouse-y', `${y}px`);
+        specular.style.background = `radial-gradient(
+          600px circle at ${x}px ${y}px,
+          rgba(255, 255, 255, 0.35) 0%,
+          rgba(255, 255, 255, 0.1) 30%,
+          transparent 70%
+        )`;
+        specular.style.opacity = '1';
       });
 
       el.addEventListener('mouseleave', () => {
-        el.style.setProperty('--mouse-x', `50%`);
-        el.style.setProperty('--mouse-y', `50%`);
+        specular.style.opacity = '0';
       });
 
-      // Liquid Fluid Touch/Click Ripple Effect
+      // Liquid Touch Ripple Effect
       el.addEventListener('click', (e) => {
         const rect = el.getBoundingClientRect();
         const circle = document.createElement('span');
@@ -445,7 +466,23 @@ document.addEventListener("DOMContentLoaded", () => {
         if (existingRipple) existingRipple.remove();
 
         el.appendChild(circle);
-        setTimeout(() => circle.remove(), 600);
+        setTimeout(() => circle.remove(), 700);
+      });
+    });
+
+    // Simpler hover highlight for buttons
+    glassButtons.forEach(el => {
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+        const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+        el.style.setProperty('--mouse-x', `${x}%`);
+        el.style.setProperty('--mouse-y', `${y}%`);
+      });
+
+      el.addEventListener('mouseleave', () => {
+        el.style.setProperty('--mouse-x', '50%');
+        el.style.setProperty('--mouse-y', '50%');
       });
     });
   }
