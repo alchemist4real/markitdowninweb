@@ -20,7 +20,6 @@
 
   <!-- Marked.js & Highlight.js for Live Preview -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
   <style>
@@ -449,7 +448,6 @@ nav {
 }
 
 .dropzone-icon {
-  font-size: 36px;
   margin-bottom: 12px;
 }
 
@@ -784,11 +782,16 @@ nav {
   box-shadow: 2px 2px 0px var(--indigo);
 }
 
-/* Syntax Highlighting */
-.hljs-keyword, .hljs-selector-tag, .hljs-subst { font-weight: 700; color: var(--indigo); }
-.hljs-string, .hljs-title, .hljs-section, .hljs-attribute, .hljs-literal, .hljs-type { color: var(--indigo); opacity: 0.9; }
-.hljs-comment, .hljs-quote, .hljs-meta { color: var(--indigo); opacity: 0.65; font-style: italic; }
-.hljs-number, .hljs-regexp, .hljs-link { color: var(--indigo); font-weight: 700; }
+/* Strict 2-Color Syntax Highlighting Overrides */
+.hljs, .hljs-keyword, .hljs-selector-tag, .hljs-subst, .hljs-string, .hljs-title, .hljs-section, .hljs-attribute, .hljs-literal, .hljs-type, .hljs-number, .hljs-regexp, .hljs-link {
+  color: var(--indigo) !important;
+  background: transparent !important;
+}
+.hljs-comment, .hljs-quote, .hljs-meta {
+  color: var(--indigo) !important;
+  opacity: 0.7 !important;
+  font-style: italic;
+}
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -1021,7 +1024,11 @@ nav {
         <div id="dropzone" class="dropzone">
           <input type="file" id="fileInput" multiple style="display:none">
           <div class="dropzone-inner">
-            <div class="dropzone-icon">⚡</div>
+            <div class="dropzone-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#362486" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
             <div class="dropzone-heading">DRAG & DROP FILES OR CLICK TO UPLOAD</div>
             <div class="zero-api-badge">✓ Free & Instant</div>
             <div class="dropzone-sub">
@@ -1137,10 +1144,10 @@ nav {
 
   <!-- Mobile Android / iOS Bottom Navigation Bar -->
   <div class="mobile-nav-bar">
-    <button class="mobile-nav-btn active" data-tab="filesTab">📁 FILES</button>
-    <button class="mobile-nav-btn" data-tab="urlTab">🔗 URL</button>
-    <button class="mobile-nav-btn" data-tab="textTab">📝 TEXT</button>
-    <button id="mobileSettingsBtn" class="mobile-nav-btn">⚙️ SETTINGS</button>
+    <button class="mobile-nav-btn active" data-tab="filesTab">FILES</button>
+    <button class="mobile-nav-btn" data-tab="urlTab">URL</button>
+    <button class="mobile-nav-btn" data-tab="textTab">TEXT</button>
+    <button id="mobileSettingsBtn" class="mobile-nav-btn">SETTINGS</button>
   </div>
 
   <script>
