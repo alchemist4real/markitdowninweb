@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pixel Editor — markitdowninweb logo</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #362486;
+  font-family: 'DM Mono', monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  min-height: 100vh;
+  gap: 16px;
+}
+h1 {
+  color: #FFE500;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.tool-btn {
+  background: #FFE500;
+  color: #362486;
+  border: 2px solid #FFE500;
+  padding: 8px 18px;
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: all 0.15s;
+}
+.tool-btn:hover { background: #362486; color: #FFE500; }
+.tool-btn.active { background: #362486; color: #FFE500; border-color: #FFE500; }
+.color-btn {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #FFE500;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.color-btn:hover { transform: scale(1.1); }
+.color-btn.active { border-color: #fff; outline: 2px solid #fff; }
+.canvas-wrap {
+  position: relative;
+  border: 3px solid #FFE500;
+  box-shadow: 6px 6px 0px #FFE500;
+  /* checkerboard for transparency preview */
+  background-image:
+    linear-gradient(45deg, #555 25%, transparent 25%),
+    linear-gradient(-45deg, #555 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #555 75%),
+    linear-gradient(-45deg, transparent 75%, #555 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+  background-color: #333;
+}
+canvas {
+  display: block;
+  cursor: crosshair;
+  image-rendering: pixelated;
+}
+.status {
+  color: #FFE500;
+  font-size: 11px;
+  font-family: monospace;
+  letter-spacing: 0.05em;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.action-btn {
+  background: none;
+  color: #FFE500;
+  border: 2px solid #FFE500;
+  padding: 8px 18px;
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: all 0.15s;
+}
+.action-btn:hover { background: #FFE500; color: #362486; }
+.action-btn.primary { background: #FFE500; color: #362486; }
+.action-btn.primary:hover { background: none; color: #FFE500; }
+</style>
+</head>
+<body>
+
+<h1>PIXEL EDITOR // markitdowninweb logo</h1>
+
+<div class="toolbar">
+  <button class="tool-btn active" id="penBtn" title="Pen (P)">PEN</button>
+  <button class="tool-btn" id="eraserBtn" title="Eraser (E)">ERASER</button>
+  <button class="tool-btn" id="fillBtn" title="Fill (F)">FILL</button>
+  <div style="width:1px;height:36px;background:#FFE500;opacity:0.4;"></div>
+  <div class="color-btn active" id="colorIndigo" style="background:#362486;" title="Deep Indigo"></div>
+  <div class="color-btn" id="colorYellow" style="background:#FFE500;" title="Electric Yellow"></div>
+  <div style="width:1px;height:36px;background:#FFE500;opacity:0.4;"></div>
+  <span class="status" id="coordLabel">x:- y:-</span>
+</div>
+
+<div class="canvas-wrap" id="canvasWrap">
+  <canvas id="c"></canvas>
+</div>
+
+<div class="actions">
+  <button class="action-btn" id="undoBtn" title="Undo (Ctrl+Z)">UNDO</button>
+  <button class="action-btn" id="clearBtn">CLEAR ALL</button>
+  <button class="action-btn" id="copyAsciiBtn">COPY ASCII</button>
+  <button class="action-btn primary" id="exportBtn">EXPORT SVG</button>
+  <button class="action-btn primary" id="saveLogoBtn">SAVE AS logo.svg</button>
+</div>
+
+<div class="status" id="status">30x26 grid | CELL: 18px</div>
+
+<script>
+// Initial traced grid — exact shape user approved
+const ROWS_ASCII = [
+` ######                      `,
+`#......#                     `,
+`#.####..#                    `,
+`#.######.###############     `,
+`#.#####################.#    `,
+`#.######################.#   `,
+`#.###....................##   `,
+`#.###.#####################  `,
+`#.##.#....................#   `,
+`#.####.##################.#  `,
+`#.############################`,
+`#.###.##...................## `,
+`#.####......................#  `,
+`#.####......................#  `,
+`#.###......................#   `,
+`##.##......................#   `,
+`##.#......................#    `,
+`####......................#    `,
+`####......................#    `,
+`###......................#     `,
+`###......................#     `,
+`##......................#      `,
+`##......................#      `,
+`#.....................##       `,
+`#.....................##       `,
+` ######################       `,
+];
+
+const INDIGO = '#362486';
+const YELLOW = '#FFE500';
+const TRANS  = null;
+
+// Parse ascii to grid
+// '#' = indigo, '.' = yellow, ' ' = transparent
+const GH = ROWS_ASCII.length;
+const GW = Math.max(...ROWS_ASCII.map(r => r.length));
+
+let grid = [];
+for (let y = 0; y < GH; y++) {
+  grid[y] = [];
+  const row = ROWS_ASCII[y];
+  for (let x = 0; x < GW; x++) {
+    const ch = (x < row.length) ? row[x] : ' ';
+    if (ch === '#') grid[y][x] = INDIGO;
+    else if (ch === '.') grid[y][x] = YELLOW;
+    else grid[y][x] = TRANS;
+  }
+}
+
+const CELL = 18;
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+canvas.width = GW * CELL;
+canvas.height = GH * CELL;
+
+let tool = 'pen';
+let color = INDIGO;
+let painting = false;
+let history = [];
+let lastX = -1, lastY = -1;
+
+function saveHistory() {
+  history.push(grid.map(row => [...row]));
+  if (history.length > 50) history.shift();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let y = 0; y < GH; y++) {
+    for (let x = 0; x < GW; x++) {
+      const c = grid[y][x];
+      if (c) {
+        ctx.fillStyle = c;
+        ctx.fillRect(x * CELL, y * CELL, CELL, CELL);
+      }
+    }
+  }
+  // Grid lines (subtle)
+  ctx.strokeStyle = 'rgba(255,229,0,0.08)';
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x <= GW; x++) {
+    ctx.beginPath();
+    ctx.moveTo(x * CELL, 0);
+    ctx.lineTo(x * CELL, canvas.height);
+    ctx.stroke();
+  }
+  for (let y = 0; y <= GH; y++) {
+    ctx.beginPath();
+    ctx.moveTo(0, y * CELL);
+    ctx.lineTo(canvas.width, y * CELL);
+    ctx.stroke();
+  }
+}
+
+function getCell(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = Math.floor((e.clientX - rect.left) * scaleX / CELL);
+  const y = Math.floor((e.clientY - rect.top) * scaleY / CELL);
+  return [x, y];
+}
+
+function paint(x, y) {
+  if (x < 0 || x >= GW || y < 0 || y >= GH) return;
+  if (x === lastX && y === lastY) return;
+  lastX = x; lastY = y;
+  if (tool === 'pen') grid[y][x] = color;
+  else if (tool === 'eraser') grid[y][x] = TRANS;
+  else if (tool === 'fill') floodFill(x, y, grid[y][x], tool === 'pen' ? color : TRANS);
+  draw();
+}
+
+function floodFill(x, y, target, replacement) {
+  if (target === replacement) return;
+  const stack = [[x, y]];
+  const visited = new Set();
+  while (stack.length) {
+    const [cx, cy] = stack.pop();
+    const key = cx + ',' + cy;
+    if (visited.has(key)) continue;
+    if (cx < 0 || cx >= GW || cy < 0 || cy >= GH) continue;
+    if (grid[cy][cx] !== target) continue;
+    visited.add(key);
+    grid[cy][cx] = replacement;
+    stack.push([cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]);
+  }
+}
+
+canvas.addEventListener('mousedown', e => {
+  saveHistory();
+  painting = true;
+  lastX = -1; lastY = -1;
+  const [x, y] = getCell(e);
+  if (tool === 'fill') { floodFill(x, y, grid[y][x], color); draw(); }
+  else paint(x, y);
+});
+
+canvas.addEventListener('mousemove', e => {
+  const [x, y] = getCell(e);
+  document.getElementById('coordLabel').textContent = `x:${x} y:${y}`;
+  if (painting && tool !== 'fill') paint(x, y);
+});
+
+canvas.addEventListener('mouseup', () => { painting = false; });
+canvas.addEventListener('mouseleave', () => { painting = false; });
+
+// Touch support
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  saveHistory();
+  painting = true;
+  lastX = -1; lastY = -1;
+  const [x, y] = getCell(e.touches[0]);
+  paint(x, y);
+}, { passive: false });
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const [x, y] = getCell(e.touches[0]);
+  paint(x, y);
+}, { passive: false });
+canvas.addEventListener('touchend', () => { painting = false; });
+
+// Tool buttons
+document.getElementById('penBtn').addEventListener('click', () => {
+  tool = 'pen';
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('penBtn').classList.add('active');
+});
+document.getElementById('eraserBtn').addEventListener('click', () => {
+  tool = 'eraser';
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('eraserBtn').classList.add('active');
+});
+document.getElementById('fillBtn').addEventListener('click', () => {
+  tool = 'fill';
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('fillBtn').classList.add('active');
+});
+
+// Color buttons
+document.getElementById('colorIndigo').addEventListener('click', () => {
+  color = INDIGO;
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('colorIndigo').classList.add('active');
+  if (tool === 'eraser') {
+    tool = 'pen';
+    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('penBtn').classList.add('active');
+  }
+});
+document.getElementById('colorYellow').addEventListener('click', () => {
+  color = YELLOW;
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('colorYellow').classList.add('active');
+  document.getElementById('penBtn').classList.add('active');
+  tool = 'pen';
+});
+
+// Undo
+document.getElementById('undoBtn').addEventListener('click', () => {
+  if (history.length) { grid = history.pop(); draw(); }
+});
+
+// Clear
+document.getElementById('clearBtn').addEventListener('click', () => {
+  saveHistory();
+  for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) grid[y][x] = TRANS;
+  draw();
+});
+
+// Copy ASCII
+document.getElementById('copyAsciiBtn').addEventListener('click', () => {
+  let txt = '';
+  for (let y = 0; y < GH; y++) {
+    for (let x = 0; x < GW; x++) {
+      const c = grid[y][x];
+      txt += c === INDIGO ? '#' : (c === YELLOW ? '.' : ' ');
+    }
+    txt += '\n';
+  }
+  navigator.clipboard.writeText(txt).then(() => {
+    document.getElementById('status').textContent = 'ASCII grid copied to clipboard!';
+    setTimeout(() => document.getElementById('status').textContent = GW + 'x' + GH + ' grid | CELL: ' + CELL + 'px', 2000);
+  });
+});
+
+// Generate SVG string from current grid
+function generateSVG() {
+  // Merge horizontal runs
+  const yLines = [];
+  const iLines = [];
+  for (let y = 0; y < GH; y++) {
+    let x = 0;
+    while (x < GW) {
+      const c = grid[y][x];
+      if (!c) { x++; continue; }
+      let run = 1;
+      while (x + run < GW && grid[y][x + run] === c) run++;
+      const rect = `  <rect x="${x}" y="${y}" width="${run}" height="1" fill="${c}"/>`;
+      if (c === YELLOW) yLines.push(rect);
+      else if (c === INDIGO) iLines.push(rect);
+      x += run;
+    }
+  }
+  return [
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${GW} ${GH}" width="512" height="512" shape-rendering="crispEdges">`,
+    `  <!-- markitdowninweb pixel-art folder logo -->`,
+    `  <!-- ${GW}x${GH} grid | transparent bg | #FFE500 + #362486 -->`,
+    ...yLines,
+    ...iLines,
+    `</svg>`
+  ].join('\n');
+}
+
+// Export SVG (download)
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const svg = generateSVG();
+  const blob = new Blob([svg], { type: 'image/svg+xml' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'logo.svg';
+  a.click();
+  document.getElementById('status').textContent = 'SVG downloaded!';
+  setTimeout(() => document.getElementById('status').textContent = GW + 'x' + GH + ' grid | CELL: ' + CELL + 'px', 2000);
+});
+
+// Save directly to logo.svg via fetch (if running locally)
+document.getElementById('saveLogoBtn').addEventListener('click', () => {
+  const svg = generateSVG();
+  // Try to save via a local save endpoint, otherwise just download
+  fetch('/api/save-logo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ svg })
+  }).then(r => {
+    if (r.ok) {
+      document.getElementById('status').textContent = 'Saved to logo.svg!';
+    } else {
+      throw new Error('no endpoint');
+    }
+  }).catch(() => {
+    // Fallback: download
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'logo.svg';
+    a.click();
+    document.getElementById('status').textContent = 'Downloaded logo.svg (copy to public/ folder)';
+  });
+  setTimeout(() => document.getElementById('status').textContent = GW + 'x' + GH + ' grid | CELL: ' + CELL + 'px', 3000);
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'p' || e.key === 'P') document.getElementById('penBtn').click();
+  if (e.key === 'e' || e.key === 'E') document.getElementById('eraserBtn').click();
+  if (e.key === 'f' || e.key === 'F') document.getElementById('fillBtn').click();
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); document.getElementById('undoBtn').click(); }
+  if (e.key === '1') document.getElementById('colorIndigo').click();
+  if (e.key === '2') document.getElementById('colorYellow').click();
+});
+
+draw();
+</script>
+</body>
+</html>
