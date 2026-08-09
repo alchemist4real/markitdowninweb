@@ -145,6 +145,21 @@ nav {
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
+  max-width: 280px;
+  opacity: 1;
+  transform: translateX(0);
+  transition: max-width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.35s ease,
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+/* When Hero Title is APPEARED -> Nav Title DISAPPEARS */
+nav.hero-visible .nav-brand-title {
+  max-width: 0;
+  opacity: 0;
+  transform: translateX(-14px);
+  pointer-events: none;
 }
 
 .nav-controls {
@@ -1789,6 +1804,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const navBrand = document.querySelector(".brand");
     const heroDisplay = document.querySelector(".hero-display");
     const heroLogo = document.querySelector(".hero-logo-img");
+    const nav = document.querySelector("nav");
+
+    if (heroDisplay && nav) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Hero Title IS APPEARED -> Nav Title DISAPPEARS
+            nav.classList.add("hero-visible");
+          } else {
+            // Hero Title IS DISAPPEARED -> Nav Title APPEARS
+            nav.classList.remove("hero-visible");
+          }
+        });
+      }, {
+        threshold: 0.1
+      });
+
+      observer.observe(heroDisplay);
+    }
 
     if (navBrand && heroDisplay) {
       navBrand.addEventListener("mouseenter", () => {
@@ -1808,7 +1842,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    log("OG Clean UI Interaction Engine initialized with Title Brother Relation System.", "info");
+    log("OG Clean UI Interaction Engine initialized with Smooth Title Appear/Disappear Relation System.", "info");
   }
 
   initOGInteractionEngine();
