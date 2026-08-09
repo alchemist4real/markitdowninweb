@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="markitdowninweb — Enterprise document & multimodal to Markdown conversion lab by Microsoft MarkItDown.">
+  <meta name="theme-color" content="#0D0D0D">
+  <title>MARKITDOWNINWEB // CONVERSION LAB</title>
+
+  <!-- Inline Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230D0D0D'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' fill='%23FAFAFA' font-size='18' font-family='monospace' font-weight='600'%3EM%3C/text%3E%3C/svg%3E">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Google Fonts: Cormorant Garamond & DM Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+  <!-- Marked.js & Highlight.js for Live Preview -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <nav>
+    <div class="nav-container">
+      <div class="brand">
+        <span class="live-dot" title="Server Online"></span>
+        <span class="logo-text">MARKITDOWNINWEB <span class="version-tag">v1.0.0</span></span>
+      </div>
+      <div class="nav-controls">
+        <button id="themeToggleBtn" class="btn-ghost" title="Toggle Light/Dark Theme">THEME</button>
+        <button id="settingsToggleBtn" class="btn-ghost" title="Conversion Settings">SETTINGS</button>
+        <button id="mcpStatusBtn" class="btn-ghost mcp-btn" title="Model Context Protocol Status">MCP: READY</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="app-container">
+    <!-- Hero / Title Section -->
+    <header class="hero">
+      <div class="hero-label">ENTERPRISE CONVERSION PIPELINE</div>
+      <h1 class="display">Multimodal Document to LLM-Ready Markdown.</h1>
+      <p class="body-text muted">
+        Convert PDF, Word, Excel, PowerPoint, Audio, Images, EPub, Outlook MSG, YouTube transcripts, and Web URLs into clean, token-efficient Markdown powered by Microsoft MarkItDown.
+      </p>
+    </header>
+
+    <!-- Interactive Pipeline Matrix Visualization -->
+    <section class="pipeline-matrix" aria-label="Pipeline Architecture Matrix">
+      <div class="matrix-row">
+        <div class="m-node">
+          <div class="m-node-header">STAGE 01</div>
+          <div class="m-node-title">Input Stream</div>
+          <div class="m-node-desc">Files, URLs, Data URIs, Text</div>
+        </div>
+        <div class="wire-h flow-right"></div>
+        <div class="m-node">
+          <div class="m-node-header">STAGE 02</div>
+          <div class="m-node-title">Magika AI Sensing</div>
+          <div class="m-node-desc">Format & Charset Identification</div>
+        </div>
+        <div class="wire-h flow-right"></div>
+        <div class="m-node">
+          <div class="m-node-header">STAGE 03</div>
+          <div class="m-node-title">Engine / Vision / Cloud</div>
+          <div class="m-node-desc">Converters, LLM Vision OCR, Azure</div>
+        </div>
+        <div class="wire-h flow-right"></div>
+        <div class="m-node">
+          <div class="m-node-header">STAGE 04</div>
+          <div class="m-node-title">Markdown Output</div>
+          <div class="m-node-desc">Clean LLM Prompt Payload</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Settings Accordion Drawer (Hidden by default) -->
+    <section id="settingsDrawer" class="settings-drawer hidden">
+      <div class="drawer-header">
+        <span class="label">CONVERSION ENGINE CONFIGURATION</span>
+        <button id="closeSettingsBtn" class="close-btn">&times;</button>
+      </div>
+      <div class="drawer-grid">
+        <div class="setting-group">
+          <label class="setting-title" for="enablePluginsCheckbox">
+            <input type="checkbox" id="enablePluginsCheckbox" checked>
+            Enable 3rd-Party Plugins & markitdown-ocr
+          </label>
+          <span class="setting-desc">Enables OCR vision and registered plugin extensions.</span>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-title" for="keepDataUrisCheckbox">
+            <input type="checkbox" id="keepDataUrisCheckbox">
+            Keep Embedded Base64 Data URIs
+          </label>
+          <span class="setting-desc">Preserves full inline base64 image strings instead of truncating them.</span>
+        </div>
+
+        <div class="setting-group">
+          <label class="label" for="openaiApiKeyInput">OpenAI / Vision API Key (Optional)</label>
+          <input type="password" id="openaiApiKeyInput" class="text-input" placeholder="sk-...">
+          <span class="setting-desc">Enables LLM Vision image captioning and full OCR extraction.</span>
+        </div>
+
+        <div class="setting-group">
+          <label class="label" for="llmModelInput">LLM Vision Model</label>
+          <input type="text" id="llmModelInput" class="text-input" value="gpt-4o" placeholder="gpt-4o">
+        </div>
+
+        <div class="setting-group">
+          <label class="label" for="docintelEndpointInput">Azure Document Intelligence Endpoint</label>
+          <input type="text" id="docintelEndpointInput" class="text-input" placeholder="https://<resource>.cognitiveservices.azure.com/">
+        </div>
+
+        <div class="setting-group">
+          <label class="label" for="cuEndpointInput">Azure Content Understanding Endpoint</label>
+          <input type="text" id="cuEndpointInput" class="text-input" placeholder="https://<resource>.cognitiveservices.azure.com/">
+        </div>
+      </div>
+    </section>
+
+    <!-- Multi-Input Workspace -->
+    <section class="workbench">
+      <!-- Input Mode Tabs -->
+      <div class="input-tabs">
+        <button class="tab-btn active" data-tab="filesTab">FILE / BATCH DROPZONE</button>
+        <button class="tab-btn" data-tab="urlTab">REMOTE URL / YOUTUBE / WIKI</button>
+        <button class="tab-btn" data-tab="textTab">DIRECT TEXT / HTML PASTE</button>
+      </div>
+
+      <!-- Tab Content 1: File / Batch Dropzone -->
+      <div id="filesTab" class="tab-content active">
+        <div id="dropzone" class="dropzone">
+          <input type="file" id="fileInput" multiple style="display:none">
+          <div class="dropzone-inner">
+            <div class="dropzone-icon">⚡</div>
+            <div class="dropzone-heading">DRAG & DROP FILES OR CLICK TO UPLOAD</div>
+            <div class="dropzone-sub">
+              Supports PDF, DOCX, XLSX, XLS, PPTX, PNG, JPG, MP3, WAV, HTML, CSV, JSON, XML, EPub, MSG, ZIP
+            </div>
+            <div class="preset-pills">
+              <span class="label">TRY FORMAT PRESETS:</span>
+              <button class="preset-btn" data-preset="sample.pdf">Sample PDF</button>
+              <button class="preset-btn" data-preset="table.xlsx">Sample Excel</button>
+              <button class="preset-btn" data-preset="doc.docx">Sample Word</button>
+              <button class="preset-btn" data-preset="slide.pptx">Sample PPTX</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- File Batch Queue List -->
+        <div id="batchQueue" class="batch-queue hidden">
+          <div class="batch-header">
+            <span id="batchCountLabel" class="label">BATCH QUEUE (0 FILES)</span>
+            <div class="batch-actions">
+              <button id="clearBatchBtn" class="btn-ghost danger">CLEAR QUEUE</button>
+              <button id="convertBatchZipBtn" class="btn-ghost accent">CONVERT & DOWNLOAD ALL AS ZIP</button>
+            </div>
+          </div>
+          <div id="batchList" class="batch-list"></div>
+        </div>
+      </div>
+
+      <!-- Tab Content 2: Remote URL -->
+      <div id="urlTab" class="tab-content">
+        <div class="url-input-container">
+          <label class="label" for="urlInput">ENTER PUBLIC DOCUMENT, YOUTUBE, WIKIPEDIA, OR WEB URL</label>
+          <div class="input-row">
+            <input type="url" id="urlInput" class="text-input" placeholder="https://en.wikipedia.org/wiki/Markdown or https://youtu.be/..." required>
+            <button id="convertUrlBtn" class="btn-ghost accent">CONVERT URL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 3: Direct Text / HTML Paste -->
+      <div id="textTab" class="tab-content">
+        <div class="text-input-container">
+          <label class="label" for="rawTextInput">PASTE RAW HTML OR TEXT SNIPPET</label>
+          <textarea id="rawTextInput" class="code-area" placeholder="<table><tr><td>Header</td></tr><tr><td>Data</td></tr></table>"></textarea>
+          <div class="text-tab-footer">
+            <select id="textExtHint" class="select-input">
+              <option value=".html">Hint: HTML</option>
+              <option value=".csv">Hint: CSV</option>
+              <option value=".json">Hint: JSON</option>
+              <option value=".xml">Hint: XML</option>
+              <option value=".txt">Hint: Plain Text</option>
+            </select>
+            <button id="convertTextBtn" class="btn-ghost accent">CONVERT SNIPPET</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Bar & Progress Indicator -->
+      <div id="statusBar" class="status-bar hidden">
+        <div class="spinner"></div>
+        <span id="statusText" class="status-text">Processing document stream through MarkItDown...</span>
+      </div>
+
+      <!-- Output Workbench: Dual-Pane Editor & Live Preview -->
+      <div id="outputSection" class="output-section hidden">
+        <div class="output-header">
+          <div class="output-title">
+            <span class="label">CONVERTED OUTPUT</span>
+            <span id="docTitleBadge" class="doc-title-badge">document.md</span>
+          </div>
+          <div class="output-stats">
+            <span class="stat-pill"><strong id="charCount">0</strong> CHARS</span>
+            <span class="stat-pill"><strong id="wordCount">0</strong> WORDS</span>
+            <span class="stat-pill accent-pill"><strong id="tokenCount">0</strong> EST. TOKENS</span>
+          </div>
+          <div class="output-actions">
+            <button id="copyMdBtn" class="btn-ghost">COPY MARKDOWN</button>
+            <button id="downloadMdBtn" class="btn-ghost accent">DOWNLOAD .MD</button>
+          </div>
+        </div>
+
+        <!-- Split View Layout -->
+        <div class="split-view">
+          <!-- Left Pane: Raw Markdown Source -->
+          <div class="pane">
+            <div class="pane-bar">
+              <span class="label">RAW MARKDOWN SOURCE</span>
+            </div>
+            <textarea id="markdownSource" class="markdown-editor" readonly></textarea>
+          </div>
+
+          <!-- Right Pane: Rendered HTML Preview -->
+          <div class="pane">
+            <div class="pane-bar">
+              <span class="label">RENDERED PREVIEW</span>
+            </div>
+            <div id="markdownPreview" class="markdown-preview"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pipeline Log Window -->
+      <div class="logs-container">
+        <div class="logs-header">
+          <span class="label">PIPELINE EXECUTION LOGS</span>
+          <button id="clearLogsBtn" class="text-btn">Clear Logs</button>
+        </div>
+        <div id="logWindow" class="logs-window">
+          <div class="log-line info">[SYSTEM] markitdowninweb engine initialized and ready.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Mobile Android / iOS Bottom Navigation Bar -->
+  <div class="mobile-nav-bar">
+    <button class="mobile-nav-btn active" data-tab="filesTab">📁 FILES</button>
+    <button class="mobile-nav-btn" data-tab="urlTab">🔗 URL</button>
+    <button class="mobile-nav-btn" data-tab="textTab">📝 TEXT</button>
+    <button id="mobileSettingsBtn" class="mobile-nav-btn">⚙️ SETTINGS</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
