@@ -317,16 +317,51 @@ nav {
   to { background-position: 14px 0; }
 }
 
+/* True Liquid Glass Specular Rim Refraction & Optical Sheen */
+.workbench, .settings-drawer, .m-node, .pane, nav {
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(24px) contrast(120%) brightness(106%) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) contrast(120%) brightness(106%) saturate(190%);
+  border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 
+    inset 0 2px 4px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -3px 8px 0 rgba(76, 157, 176, 0.35),
+    inset 3px 0 6px 0 rgba(255, 255, 255, 0.65),
+    inset -3px 0 6px 0 rgba(76, 157, 176, 0.25),
+    0 24px 50px -12px rgba(76, 157, 176, 0.28) !important;
+}
+
+/* Dynamic Liquid Light Sheen Animation */
+.workbench::before, .settings-drawer::before, .m-node::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 45%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 55%
+  );
+  pointer-events: none;
+  transform: rotate(25deg);
+  animation: liquidFluidSheen 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes liquidFluidSheen {
+  0% { transform: translateX(-120%) rotate(25deg); }
+  25%, 100% { transform: translateX(120%) rotate(25deg); }
+}
+
 /* Settings Drawer - Glass Card */
 .settings-drawer {
-  background: rgba(255, 244, 209, 0.85);
-  border: 1.5px solid rgba(76, 157, 176, 0.35);
+  background: rgba(255, 244, 209, 0.82);
   padding: 26px;
   margin-bottom: 30px;
   border-radius: var(--radius-lg);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  box-shadow: 0 16px 40px -8px rgba(76, 157, 176, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
   animation: fadeIn 0.3s ease-out;
 }
 
