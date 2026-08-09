@@ -7,8 +7,8 @@
   <meta name="theme-color" content="#0D0D0D">
   <title>MARKITDOWNINWEB // CONVERSION LAB</title>
 
-  <!-- Inline Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230D0D0D'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' fill='%23FAFAFA' font-size='18' font-family='monospace' font-weight='600'%3EM%3C/text%3E%3C/svg%3E">
+  <!-- SVG Logo Favicon -->
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
 
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
@@ -16,7 +16,7 @@
   <!-- Google Fonts: Cormorant Garamond & DM Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
   <!-- Marked.js & Highlight.js for Live Preview -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -31,7 +31,7 @@
     <div class="nav-container">
       <div class="brand">
         <span class="live-dot" title="Server Online"></span>
-        <span class="logo-text">MARKITDOWNINWEB <span class="version-tag">v1.0.0</span></span>
+        <span class="logo-text"><span class="brand-sub">markitdown</span><span class="brand-main">inweb</span> <span class="version-tag">v1.0.0</span></span>
       </div>
       <div class="nav-controls">
         <button id="themeToggleBtn" class="btn-ghost" title="Toggle Light/Dark Theme">THEME</button>
@@ -44,7 +44,7 @@
   <main class="app-container">
     <!-- Clean Minimal Hero Header -->
     <header class="hero">
-      <h1 class="display">markitdowninweb</h1>
+      <h1 class="display brand-display"><span class="brand-sub">markitdown</span><span class="brand-main">inweb</span></h1>
       <p class="body-text muted">
         Convert PDF, Word, Excel, PowerPoint, Images, Audio, URLs, and text into clean Markdown.
       </p>

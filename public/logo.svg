@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&amp;display=swap');
+  </style>
+  <rect width="512" height="512" rx="112" fill="#0C1A1D" />
+  <text x="256" y="215" font-family="'Cormorant Garamond', Georgia, serif" font-weight="600" font-size="68" fill="#4C9DB0" text-anchor="middle" letter-spacing="-1">markitdown</text>
+  <text x="256" y="345" font-family="'Cormorant Garamond', Georgia, serif" font-weight="700" font-size="136" fill="#FFEBAF" text-anchor="middle" letter-spacing="-4">inweb</text>
+</svg>

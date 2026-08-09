@@ -1,15 +1,17 @@
 :root {
-  --bg: #FAFAFA;
+  --vanilla: #FFEBAF;
+  --moonstone: #4C9DB0;
+  --bg: #F4F8F9;
   --bg-card: #FFFFFF;
-  --fg: #0D0D0D;
-  --fg-muted: #6B6B6B;
-  --fg-faint: #E5E5E5;
-  --accent: #2563eb;
-  --live-dot: #22C55E;
-  --tag-bg: #F0F0F0;
-  --tag-fg: #3D3D3D;
-  --danger: #ef4444;
-  --warning: #f59e0b;
+  --fg: #0C1A1D;
+  --fg-muted: #4C9DB0;
+  --fg-faint: #D4E6EA;
+  --accent: #4C9DB0;
+  --live-dot: #4C9DB0;
+  --tag-bg: #E6F2F5;
+  --tag-fg: #0C1A1D;
+  --danger: #4C9DB0;
+  --warning: #4C9DB0;
   --font-display: 'Cormorant Garamond', serif;
   --font-mono: 'DM Mono', monospace;
   --radius-sm: 8px;
@@ -19,15 +21,30 @@
 }
 
 [data-theme="dark"] {
-  --bg: #0D0D0D;
-  --bg-card: #141414;
-  --fg: #FAFAFA;
-  --fg-muted: #A0A0A0;
-  --fg-faint: #262626;
-  --accent: #3b82f6;
-  --live-dot: #22C55E;
-  --tag-bg: #1F1F1F;
-  --tag-fg: #D4D4D4;
+  --vanilla: #FFEBAF;
+  --moonstone: #4C9DB0;
+  --bg: #0B1619;
+  --bg-card: #122226;
+  --fg: #FFEBAF;
+  --fg-muted: #7CB0BD;
+  --fg-faint: #1C353B;
+  --accent: #4C9DB0;
+  --live-dot: #4C9DB0;
+  --tag-bg: #182C31;
+  --tag-fg: #FFEBAF;
+  --danger: #4C9DB0;
+  --warning: #4C9DB0;
+}
+
+/* Option 4C Typography Brand Styling */
+.brand-sub {
+  color: var(--fg-muted);
+  font-weight: 600;
+}
+
+.brand-main {
+  color: var(--fg);
+  font-weight: 700;
 }
 
 * {

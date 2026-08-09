@@ -4,12 +4,12 @@
   "description": "Enterprise Multimodal Document & File to Markdown Conversion Lab by Microsoft MarkItDown",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0D0D0D",
-  "theme_color": "#0D0D0D",
+  "background_color": "#0B1619",
+  "theme_color": "#0B1619",
   "orientation": "any",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230D0D0D'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' fill='%23FAFAFA' font-size='280' font-family='monospace' font-weight='600'%3EM%3C/text%3E%3C/svg%3E",
+      "src": "logo.svg",
       "sizes": "512x512",
       "type": "image/svg+xml"
     }
