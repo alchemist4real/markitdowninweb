@@ -229,102 +229,128 @@ nav {
   font-size: 11px;
 }
 
-/* Pipeline Matrix */
-.pipeline-matrix {
-  margin: 30px 0 50px;
-  width: 100%;
-}
-
-.matrix-row {
+/* Modal Overlay & Centered Card System */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(54, 36, 134, 0.55);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  position: relative;
-  gap: 12px;
+  padding: 20px;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
-.m-node {
+.modal-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.modal-card {
   background: var(--yellow);
-  border: 2px solid var(--indigo);
-  padding: 18px 20px;
-  border-radius: var(--radius-md);
-  flex: 1;
-  min-width: 0;
-  text-align: center;
-  box-shadow: var(--shadow-og);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.m-node:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px var(--indigo);
-}
-
-.m-node-header {
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  color: var(--indigo);
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.m-node-title {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 2px;
-  line-height: 1.1;
-  color: var(--indigo);
-}
-
-.m-node-desc {
-  font-size: 11px;
-  color: var(--indigo);
-  font-weight: 500;
-  line-height: 1.3;
-}
-
-.wire-h {
-  width: 30px;
-  height: 2px;
-  background: var(--indigo);
-  flex-shrink: 0;
-}
-
-/* Settings Drawer */
-.settings-drawer {
-  background: var(--yellow);
-  border: 2px solid var(--indigo);
-  box-shadow: var(--shadow-og);
-  padding: 26px;
-  margin-bottom: 30px;
+  border: 3px solid var(--indigo);
   border-radius: var(--radius-lg);
+  box-shadow: 8px 8px 0px var(--indigo);
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px;
+  position: relative;
+  animation: modalPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.settings-drawer.hidden {
-  display: none;
+@keyframes modalPop {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
-.drawer-header {
+.modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
   border-bottom: 2px solid var(--indigo);
-  padding-bottom: 12px;
+  padding-bottom: 14px;
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--indigo);
+  letter-spacing: -0.02em;
+}
+
+.modal-badge {
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--indigo);
+  color: var(--yellow);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  display: inline-block;
+  margin-top: 4px;
 }
 
 .close-btn {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 28px;
+  line-height: 1;
   cursor: pointer;
   color: var(--indigo);
+  font-weight: 700;
   transition: transform 0.2s;
 }
 
 .close-btn:hover {
-  transform: scale(1.2);
+  transform: scale(1.25);
+}
+
+.mcp-info-box {
+  background: rgba(54, 36, 134, 0.08);
+  border: 2px solid var(--indigo);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+.mcp-info-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--indigo);
+  margin-bottom: 6px;
+  letter-spacing: 0.04em;
+}
+
+.mcp-info-text {
+  font-size: 12px;
+  color: var(--indigo);
+  line-height: 1.6;
+}
+
+.endpoint-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.endpoint-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--yellow);
+  border: 1.5px solid var(--indigo);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .drawer-grid {
@@ -782,7 +808,7 @@ nav {
   box-shadow: 2px 2px 0px var(--indigo);
 }
 
-/* Strict 2-Color Syntax Highlighting Overrides */
+/* Syntax Highlighting */
 .hljs, .hljs-keyword, .hljs-selector-tag, .hljs-subst, .hljs-string, .hljs-title, .hljs-section, .hljs-attribute, .hljs-literal, .hljs-type, .hljs-number, .hljs-regexp, .hljs-link {
   color: var(--indigo) !important;
   background: transparent !important;
@@ -952,26 +978,18 @@ nav {
     </div>
   </nav>
 
-  <main class="app-container">
-    <!-- Clean Minimal Hero Header -->
-    <header class="hero">
-      <h1 class="display brand-display"><span class="brand-sub">markitdown</span><span class="brand-main">inweb</span></h1>
-      <p class="body-text muted">
-        Convert PDF, Word, Excel, PowerPoint, Images, Audio, URLs, and text into clean Markdown.
-      </p>
-    </header>
-
-    <!-- Settings Accordion Drawer (Hidden by default) -->
-    <section id="settingsDrawer" class="settings-drawer hidden">
-      <div class="drawer-header">
-        <span class="label">SETTINGS</span>
-        <button id="closeSettingsBtn" class="close-btn">&times;</button>
+  <!-- Settings Pop-up Modal -->
+  <div id="settingsModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="settingsModalTitle" class="modal-title">SETTINGS</h2>
+        <button id="closeSettingsBtn" class="close-btn" aria-label="Close Settings">&times;</button>
       </div>
       <div class="drawer-grid">
         <div class="setting-group">
           <label class="setting-title" for="enablePluginsCheckbox">
             <input type="checkbox" id="enablePluginsCheckbox" checked>
-            Enable Plugins & OCR
+            Enable Plugins &amp; OCR
           </label>
           <span class="setting-desc">Enables OCR vision and registered plugin extensions.</span>
         </div>
@@ -1008,7 +1026,67 @@ nav {
           <input type="text" id="llmModelInput" class="text-input" value="gpt-4o" placeholder="gpt-4o">
         </div>
       </div>
-    </section>
+      <div style="margin-top: 24px; text-align: right;">
+        <button id="saveSettingsBtn" class="btn-ghost accent">SAVE &amp; CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MCP Guide & Interactive Status Modal -->
+  <div id="mcpModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="mcpModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2 id="mcpModalTitle" class="modal-title">MCP HUB</h2>
+          <span class="modal-badge">● ONLINE &amp; READY</span>
+        </div>
+        <button id="closeMcpBtn" class="close-btn" aria-label="Close MCP Hub">&times;</button>
+      </div>
+
+      <div class="mcp-info-box">
+        <div class="mcp-info-title">MODEL CONTEXT PROTOCOL (MCP) GUIDE</div>
+        <p class="mcp-info-text">
+          MarkItDownInWeb acts as a universal Model Context Protocol (MCP) provider. Autonomous AI agents, LLMs, and IDE extensions connect to this service to convert PDFs, Word, Excel, PowerPoint, Audio, Images, and Webpages directly into clean structured Markdown.
+        </p>
+      </div>
+
+      <div class="mcp-info-box">
+        <div class="mcp-info-title">AVAILABLE MCP API ENDPOINTS</div>
+        <div class="endpoint-list">
+          <div class="endpoint-item">
+            <code>POST /api/convert/file</code>
+            <span>File Stream</span>
+          </div>
+          <div class="endpoint-item">
+            <code>POST /api/convert/url</code>
+            <span>Web / YouTube</span>
+          </div>
+          <div class="endpoint-item">
+            <code>POST /api/convert/text</code>
+            <span>HTML / Snippet</span>
+          </div>
+          <div class="endpoint-item">
+            <code>POST /api/convert/batch</code>
+            <span>Batch ZIP Export</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button id="testMcpPingBtn" class="btn-ghost accent" style="flex: 1;">TEST MCP CONNECTION</button>
+        <button id="mcpCloseFooterBtn" class="btn-ghost" style="flex: 1;">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="app-container">
+    <!-- Clean Minimal Hero Header -->
+    <header class="hero">
+      <h1 class="display brand-display"><span class="brand-sub">markitdown</span><span class="brand-main">inweb</span></h1>
+      <p class="body-text muted">
+        Convert PDF, Word, Excel, PowerPoint, Images, Audio, URLs, and text into clean Markdown.
+      </p>
+    </header>
 
     <!-- Multi-Input Workspace -->
     <section class="workbench">
@@ -1184,17 +1262,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const logWindow = document.getElementById("logWindow");
   const clearLogsBtn = document.getElementById("clearLogsBtn");
 
+  // Modal Elements
   const settingsToggleBtn = document.getElementById("settingsToggleBtn");
+  const mobileSettingsBtn = document.getElementById("mobileSettingsBtn");
   const closeSettingsBtn = document.getElementById("closeSettingsBtn");
-  const settingsDrawer = document.getElementById("settingsDrawer");
+  const saveSettingsBtn = document.getElementById("saveSettingsBtn");
+  const settingsModal = document.getElementById("settingsModal");
+
+  const mcpStatusBtn = document.getElementById("mcpStatusBtn");
+  const closeMcpBtn = document.getElementById("closeMcpBtn");
+  const mcpCloseFooterBtn = document.getElementById("mcpCloseFooterBtn");
+  const testMcpPingBtn = document.getElementById("testMcpPingBtn");
+  const mcpModal = document.getElementById("mcpModal");
 
   const enablePluginsCheckbox = document.getElementById("enablePluginsCheckbox");
   const keepDataUrisCheckbox = document.getElementById("keepDataUrisCheckbox");
   const llmProviderSelect = document.getElementById("llmProviderSelect");
   const openaiApiKeyInput = document.getElementById("openaiApiKeyInput");
   const llmModelInput = document.getElementById("llmModelInput");
-  const docintelEndpointInput = document.getElementById("docintelEndpointInput");
-  const cuEndpointInput = document.getElementById("cuEndpointInput");
 
   const tabBtns = document.querySelectorAll(".tab-btn, .mobile-nav-btn[data-tab]");
   const tabContents = document.querySelectorAll(".tab-content");
@@ -1232,13 +1317,69 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function toggleSettings() {
-    settingsDrawer.classList.toggle("hidden");
+  // Settings Modal Handlers
+  function openSettings() {
+    settingsModal.classList.remove("hidden");
   }
-  settingsToggleBtn.addEventListener("click", toggleSettings);
-  closeSettingsBtn.addEventListener("click", toggleSettings);
-  const mobileSettingsBtn = document.getElementById("mobileSettingsBtn");
-  if (mobileSettingsBtn) mobileSettingsBtn.addEventListener("click", toggleSettings);
+  function closeSettings() {
+    settingsModal.classList.add("hidden");
+  }
+  settingsToggleBtn.addEventListener("click", openSettings);
+  if (mobileSettingsBtn) mobileSettingsBtn.addEventListener("click", openSettings);
+  closeSettingsBtn.addEventListener("click", closeSettings);
+  saveSettingsBtn.addEventListener("click", () => {
+    closeSettings();
+    log("Conversion settings updated.", "info");
+  });
+  settingsModal.addEventListener("click", (e) => {
+    if (e.target === settingsModal) closeSettings();
+  });
+
+  // MCP Modal Handlers
+  function openMcp() {
+    mcpModal.classList.remove("hidden");
+  }
+  function closeMcp() {
+    mcpModal.classList.add("hidden");
+  }
+  mcpStatusBtn.addEventListener("click", openMcp);
+  closeMcpBtn.addEventListener("click", closeMcp);
+  mcpCloseFooterBtn.addEventListener("click", closeMcp);
+  mcpModal.addEventListener("click", (e) => {
+    if (e.target === mcpModal) closeMcp();
+  });
+
+  testMcpPingBtn.addEventListener("click", async () => {
+    const origText = testMcpPingBtn.textContent;
+    testMcpPingBtn.textContent = "PINGING...";
+    log("Sending ping to MCP server...", "info");
+    try {
+      const resp = await fetch("/api/convert/text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: "MCP Ping Test", extension_hint: ".txt" })
+      });
+      if (resp.ok) {
+        testMcpPingBtn.textContent = "✓ PING SUCCESSFUL (200 OK)";
+        log("MCP Server Ping Test Successful (200 OK).", "success");
+      } else {
+        throw new Error("HTTP " + resp.status);
+      }
+    } catch (err) {
+      testMcpPingBtn.textContent = "❌ PING FAILED";
+      log("MCP Ping Failed: " + err.message, "error");
+    } finally {
+      setTimeout(() => testMcpPingBtn.textContent = origText, 3000);
+    }
+  });
+
+  // ESC key closes any open modal
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeSettings();
+      closeMcp();
+    }
+  });
 
   tabBtns.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -1341,8 +1482,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (openaiApiKeyInput && openaiApiKeyInput.value) formData.append("openai_api_key", openaiApiKeyInput.value);
     if (llmModelInput && llmModelInput.value) formData.append("llm_model", llmModelInput.value);
-    if (docintelEndpointInput && docintelEndpointInput.value) formData.append("docintel_endpoint", docintelEndpointInput.value);
-    if (cuEndpointInput && cuEndpointInput.value) formData.append("cu_endpoint", cuEndpointInput.value);
 
     try {
       const resp = await fetch("/api/convert/file", {
@@ -1548,7 +1687,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initOGInteractionEngine() {
-    log("OG Clean UI Interaction Engine initialized.", "info");
+    log("OG Clean UI Interaction Engine initialized with Settings & MCP Modals.", "info");
   }
 
   initOGInteractionEngine();
