@@ -85,7 +85,7 @@ html, body {
 /* Floating Framed Fixed Navigation Bar */
 nav {
   position: fixed;
-  top: 16px;
+  top: 18px;
   left: 0;
   right: 0;
   z-index: 1000;
@@ -98,15 +98,20 @@ nav {
 .nav-container {
   pointer-events: auto;
   background: var(--yellow);
-  border: 2.5px solid var(--indigo);
+  border: 3px solid var(--indigo);
   border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-og);
+  box-shadow: 6px 6px 0px var(--indigo);
   height: 64px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 24px;
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
+}
+
+.nav-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 8px 8px 0px var(--indigo);
 }
 
 .brand {
@@ -116,21 +121,21 @@ nav {
 }
 
 .nav-logo-img {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   object-fit: contain;
   image-rendering: pixelated;
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .nav-logo-img:hover {
-  transform: scale(1.2) rotate(-6deg);
+  transform: scale(1.25) rotate(-6deg);
 }
 
 .logo-text {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   letter-spacing: 0.02em;
   display: flex;
   align-items: center;
@@ -1147,8 +1152,8 @@ nav {
             <div class="dropzone-icon">
               <img src="logo.svg" alt="MarkItDown Logo" class="dropzone-logo-img">
             </div>
-            <div class="dropzone-heading">DRAG & DROP FILES OR CLICK TO UPLOAD</div>
-            <div class="zero-api-badge">✓ Free & Instant</div>
+            <div class="dropzone-heading">DRAG YOUR SHIT HERE OR CLICK TO UPLOAD</div>
+            <div class="zero-api-badge">100% FREE &amp; INSTANT</div>
             <div class="dropzone-sub">
               PDF, DOCX, XLSX, XLS, PPTX, Images, Audio, HTML, CSV, EPub, MSG, ZIP
             </div>
