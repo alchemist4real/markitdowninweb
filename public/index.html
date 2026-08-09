@@ -196,6 +196,55 @@ nav {
   line-height: 1.1;
   margin-bottom: 16px;
   color: var(--indigo);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s ease;
+}
+
+/* Title Brother Relation Connector Wire & Synchronized Animations */
+.title-wire-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: -10px 0 14px;
+}
+
+.title-wire-line {
+  width: 2px;
+  height: 24px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--indigo) 0,
+    var(--indigo) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+  position: relative;
+}
+
+.title-wire-node {
+  width: 6px;
+  height: 6px;
+  background: var(--indigo);
+  border-radius: 50%;
+  animation: pulseWireNode 2.2s infinite ease-in-out;
+}
+
+@keyframes pulseWireNode {
+  0%, 100% { transform: translateY(0); opacity: 0.3; }
+  50% { transform: translateY(18px); opacity: 1; }
+}
+
+/* Synchronized Hover Highlights for Title Brothers */
+.brand.brother-active .nav-logo-img {
+  transform: scale(1.3) rotate(-8deg);
+}
+
+.brand.brother-active .logo-text {
+  letter-spacing: 0.05em;
+}
+
+.hero-display.brother-active {
+  transform: scale(1.04);
+  filter: drop-shadow(4px 4px 0px rgba(54, 36, 134, 0.3));
 }
 
 .body-text {
@@ -1128,8 +1177,13 @@ nav {
   <main class="app-container">
     <!-- Clean Minimal Hero Header -->
     <header class="hero">
+      <div class="title-wire-container" title="Title Brother Connection Signal">
+        <div class="title-wire-line">
+          <div class="title-wire-node"></div>
+        </div>
+      </div>
       <img src="logo.svg" alt="MarkItDown Logo" class="hero-logo-img">
-      <h1 class="display brand-display"><span class="brand-sub">markitdown</span><span class="brand-main">inweb</span></h1>
+      <h1 class="display brand-display hero-display"><span class="brand-sub">markitdown</span><span class="brand-main">inweb</span></h1>
       <p class="body-text muted">
         Convert PDF, Word, Excel, PowerPoint, Images, Audio, URLs, and text into clean Markdown.
       </p>
@@ -1732,7 +1786,29 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initOGInteractionEngine() {
-    log("OG Clean UI Interaction Engine initialized with Floating Fixed Navbar.", "info");
+    const navBrand = document.querySelector(".brand");
+    const heroDisplay = document.querySelector(".hero-display");
+    const heroLogo = document.querySelector(".hero-logo-img");
+
+    if (navBrand && heroDisplay) {
+      navBrand.addEventListener("mouseenter", () => {
+        heroDisplay.classList.add("brother-active");
+        if (heroLogo) heroLogo.style.transform = "translateY(-6px) scale(1.15) rotate(4deg)";
+      });
+      navBrand.addEventListener("mouseleave", () => {
+        heroDisplay.classList.remove("brother-active");
+        if (heroLogo) heroLogo.style.transform = "";
+      });
+
+      heroDisplay.addEventListener("mouseenter", () => {
+        navBrand.classList.add("brother-active");
+      });
+      heroDisplay.addEventListener("mouseleave", () => {
+        navBrand.classList.remove("brother-active");
+      });
+    }
+
+    log("OG Clean UI Interaction Engine initialized with Title Brother Relation System.", "info");
   }
 
   initOGInteractionEngine();
