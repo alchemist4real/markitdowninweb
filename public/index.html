@@ -1097,9 +1097,24 @@ nav {
         </p>
       </div>
 
+      <div class="mcp-info-box" style="background: rgba(54, 36, 134, 0.08); border: 2px solid var(--indigo);">
+        <div class="mcp-info-title">UNIFIED MCP ENTRYPOINT LINK</div>
+        <p class="mcp-info-text" style="margin-bottom: 10px;">
+          One single universal endpoint to access all document conversion, vision OCR, and batch capabilities for AI agents (Claude, Antigravity, Cursor, LangChain).
+        </p>
+        <div class="endpoint-item" style="background: var(--yellow); padding: 10px 14px; border: 2px solid var(--indigo); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+          <code id="unifiedMcpUrlCode" style="font-weight: 700; font-size: 13px; word-break: break-all;">/api/mcp</code>
+          <button id="copyUnifiedMcpBtn" class="btn-ghost accent" style="min-height: 32px; padding: 4px 12px; font-size: 10px; white-space: nowrap;">COPY LINK</button>
+        </div>
+      </div>
+
       <div class="mcp-info-box">
         <div class="mcp-info-title">AVAILABLE MCP API ENDPOINTS</div>
         <div class="endpoint-list">
+          <div class="endpoint-item">
+            <code>POST /api/mcp</code>
+            <span>Unified MCP Gateway</span>
+          </div>
           <div class="endpoint-item">
             <code>POST /api/convert/file</code>
             <span>File Stream</span>
@@ -1387,19 +1402,37 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === mcpModal) closeMcp();
   });
 
+  // Unified MCP Copy Link & Ping Handlers
+  const copyUnifiedMcpBtn = document.getElementById("copyUnifiedMcpBtn");
+  const unifiedMcpUrlCode = document.getElementById("unifiedMcpUrlCode");
+
+  if (unifiedMcpUrlCode) {
+    unifiedMcpUrlCode.textContent = window.location.origin + "/api/mcp";
+  }
+
+  if (copyUnifiedMcpBtn) {
+    copyUnifiedMcpBtn.addEventListener("click", () => {
+      const fullUrl = window.location.origin + "/api/mcp";
+      navigator.clipboard.writeText(fullUrl);
+      copyUnifiedMcpBtn.textContent = "✓ COPIED!";
+      log("Unified MCP Endpoint URL copied to clipboard: " + fullUrl, "success");
+      setTimeout(() => copyUnifiedMcpBtn.textContent = "COPY LINK", 2500);
+    });
+  }
+
   testMcpPingBtn.addEventListener("click", async () => {
     const origText = testMcpPingBtn.textContent;
-    testMcpPingBtn.textContent = "PINGING...";
-    log("Sending ping to MCP server...", "info");
+    testMcpPingBtn.textContent = "PINGING UNIFIED GATEWAY...";
+    log("Sending ping to Unified MCP Gateway (/api/mcp)...", "info");
     try {
-      const resp = await fetch("/api/convert/text", {
+      const resp = await fetch("/api/mcp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: "MCP Ping Test", extension_hint: ".txt" })
+        body: JSON.stringify({ method: "ping" })
       });
       if (resp.ok) {
-        testMcpPingBtn.textContent = "✓ PING SUCCESSFUL (200 OK)";
-        log("MCP Server Ping Test Successful (200 OK).", "success");
+        testMcpPingBtn.textContent = "✓ MCP GATEWAY PING SUCCESSFUL (200 OK)";
+        log("Unified MCP Server Ping Test Successful (200 OK).", "success");
       } else {
         throw new Error("HTTP " + resp.status);
       }

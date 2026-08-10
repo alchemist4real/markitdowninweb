@@ -88,10 +88,21 @@ To run `markitdowninweb` locally on your machine:
 
 ---
 
-## 📡 REST API Documentation
+## 🔌 Unified Model Context Protocol (MCP) Gateway
+
+`markitdowninweb` provides a **single unified MCP entrypoint link** for AI Agents (Claude, Antigravity, Cursor, LangChain):
+
+- **Unified MCP Link**: `https://markitdowninweb.vercel.app/api/mcp`
+- **Protocol Standard**: JSON-RPC 2.0 & REST MCP Tool Server
+- **Supported Actions**: `tools/list` (Tool Discovery), `tools/call` (Dynamic Tool Execution), `ping` (Health Check), `convert_url`, `convert_text`, `convert_file`, `convert_batch`.
+
+---
+
+## 📡 REST & MCP API Documentation
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
+| `GET / POST` | `/api/mcp` | **Unified MCP Gateway** (Universal tool discovery & JSON-RPC document processing for AI agents) |
 | `POST` | `/api/convert/file` | Converts an uploaded file stream (supports `enable_plugins`, `openai_api_key`, `keep_data_uris`, etc.) |
 | `POST` | `/api/convert/url` | Fetches and converts a remote URL, YouTube link, or Wikipedia article |
 | `POST` | `/api/convert/text` | Converts raw HTML or text snippets to Markdown |

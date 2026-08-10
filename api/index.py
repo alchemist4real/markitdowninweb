@@ -477,16 +477,105 @@ async def convert_batch(
     # Pack results into ZIP
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
-        for md_filename, content, error in results:
-            zip_file.writestr(md_filename, content)
-
-    zip_buffer.seek(0)
-
     return Response(
         content=zip_buffer.getvalue(),
         media_type="application/zip",
         headers={"Content-Disposition": "attachment; filename=markitdowninweb_export.zip"}
     )
+
+
+# ─── Unified Model Context Protocol (MCP) Router & Tool Server ───────────────
+
+class MCPRequest(BaseModel):
+    method: Optional[str] = None
+    action: Optional[str] = None
+    url: Optional[str] = None
+    text: Optional[str] = None
+    extension_hint: Optional[str] = ".html"
+    params: Optional[dict] = None
+    arguments: Optional[dict] = None
+    enable_plugins: bool = False
+    keep_data_uris: bool = False
+    openai_api_key: Optional[str] = None
+    llm_provider: Optional[str] = "auto"
+
+
+@app.get("/api/mcp")
+def get_mcp_manifest():
+    """Unified MCP Server Manifest & Documentation endpoint."""
+    return {
+        "mcp_version": "1.0.0",
+        "name": "markitdowninweb-mcp-server",
+        "description": "Universal Model Context Protocol (MCP) Provider for Multimodal Document Conversion to Clean Markdown.",
+        "unified_endpoint": "/api/mcp",
+        "status": "online",
+        "tools": [
+            {
+                "name": "convert_url",
+                "description": "Convert public document, website, or YouTube URL to Markdown.",
+                "parameters": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}
+            },
+            {
+                "name": "convert_text",
+                "description": "Convert HTML, CSV, JSON, XML or plain text snippet to Markdown.",
+                "parameters": {"type": "object", "properties": {"text": {"type": "string"}, "extension_hint": {"type": "string", "default": ".html"}}, "required": ["text"]}
+            },
+            {
+                "name": "convert_file",
+                "description": "Convert local document (PDF, Word, Excel, PPTX, Image, Audio) to Markdown using 3-tier engine.",
+                "parameters": {"type": "object", "properties": {"file": {"type": "string", "format": "binary"}}, "required": ["file"]}
+            },
+            {
+                "name": "convert_batch",
+                "description": "Batch convert multiple documents into a single ZIP archive.",
+                "parameters": {"type": "object", "properties": {"files": {"type": "array", "items": {"type": "string", "format": "binary"}}}, "required": ["files"]}
+            }
+        ]
+    }
+
+
+@app.post("/api/mcp")
+async def unified_mcp_endpoint(req: MCPRequest):
+    """Unified MCP endpoint handling JSON-RPC tool discovery, tool calls, and direct conversion routing."""
+    method = req.method or req.action or ""
+    args = req.arguments or (req.params.get("arguments") if req.params else {}) or {}
+
+    if method in ("tools/list", "list_tools", "manifest"):
+        return get_mcp_manifest()
+
+    if method in ("ping", "health"):
+        return {"jsonrpc": "2.0", "result": {"status": "online", "pong": True}}
+
+    tool_name = method.replace("tools/call/", "").replace("tools/", "")
+    if tool_name == "call":
+        tool_name = req.params.get("name") if req.params else args.get("name")
+
+    if tool_name == "convert_url" or req.url:
+        target_url = args.get("url") or req.url
+        if not target_url:
+            raise HTTPException(status_code=400, detail="Missing required 'url' parameter.")
+        url_req = URLConvertRequest(
+            url=target_url,
+            enable_plugins=req.enable_plugins,
+            keep_data_uris=req.keep_data_uris,
+            openai_api_key=req.openai_api_key
+        )
+        res = await convert_url(url_req)
+        return {"jsonrpc": "2.0", "result": res}
+
+    if tool_name == "convert_text" or req.text:
+        target_text = args.get("text") or req.text
+        if not target_text:
+            raise HTTPException(status_code=400, detail="Missing required 'text' parameter.")
+        text_req = TextConvertRequest(
+            text=target_text,
+            extension_hint=args.get("extension_hint") or req.extension_hint or ".html",
+            enable_plugins=req.enable_plugins
+        )
+        res = await convert_text(text_req)
+        return {"jsonrpc": "2.0", "result": res}
+
+    return get_mcp_manifest()
 
 
 # ─── Static File Serving ─────────────────────────────────────────────────────
