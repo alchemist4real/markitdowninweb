@@ -141,27 +141,6 @@ nav {
   align-items: center;
 }
 
-.nav-brand-title {
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
-  max-width: 280px;
-  opacity: 1;
-  transform: translateX(0);
-  transition: max-width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.35s ease,
-              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
-}
-
-/* When Hero Title is APPEARED -> Nav Title DISAPPEARS */
-nav.hero-visible .nav-brand-title {
-  max-width: 0;
-  opacity: 0;
-  transform: translateX(-14px);
-  pointer-events: none;
-}
-
 .nav-controls {
   display: flex;
   gap: 14px;
@@ -177,65 +156,6 @@ nav.hero-visible .nav-brand-title {
   z-index: 1;
 }
 
-/* Hero Section */
-.hero {
-  margin-bottom: 45px;
-  text-align: center;
-  max-width: 720px;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.hero-logo-img {
-  width: 78px;
-  height: 78px;
-  object-fit: contain;
-  image-rendering: pixelated;
-  margin-bottom: 18px;
-  animation: floatLogo 3.5s ease-in-out infinite;
-  filter: drop-shadow(3px 3px 0px rgba(54, 36, 134, 0.25));
-}
-
-@keyframes floatLogo {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(2deg); }
-}
-
-.display {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(2.2rem, 5.5vw, 3.8rem);
-  line-height: 1.1;
-  margin-bottom: 16px;
-  color: var(--indigo);
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s ease;
-}
-
-/* Synchronized Hover Highlights for Title Brothers */
-.brand.brother-active .nav-logo-img {
-  transform: scale(1.3) rotate(-8deg);
-}
-
-.brand.brother-active .logo-text {
-  letter-spacing: 0.05em;
-}
-
-.hero-display.brother-active {
-  transform: scale(1.04);
-  filter: drop-shadow(4px 4px 0px rgba(54, 36, 134, 0.3));
-}
-
-.body-text {
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--indigo);
-  font-weight: 500;
-  max-width: 600px;
-  margin: 0 auto;
-}
 
 /* Clean OG High-Contrast Buttons */
 .btn-ghost {
@@ -1002,9 +922,41 @@ nav.hero-visible .nav-brand-title {
   body {
     padding-bottom: 60px;
   }
+
+  /* Compact nav for mobile — prevent offside text */
+  nav {
+    top: 10px;
+    padding: 0 10px;
+  }
+  .nav-container {
+    height: 52px;
+    padding: 0 16px;
+    box-shadow: 4px 4px 0px var(--indigo);
+  }
+  .brand {
+    gap: 10px;
+  }
+  .nav-logo-img {
+    width: 28px;
+    height: 28px;
+  }
+  .logo-text {
+    font-size: 1.1rem;
+  }
   .nav-controls {
     display: none;
   }
+
+  /* Reduce top padding since nav is smaller */
+  .app-container {
+    padding-top: 72px;
+  }
+
+  /* Hide desktop input-tabs — mobile-nav-bar handles this (zero redundancy) */
+  .input-tabs {
+    display: none;
+  }
+
   .mobile-nav-bar {
     position: fixed;
     bottom: 12px;
@@ -1026,7 +978,7 @@ nav.hero-visible .nav-brand-title {
     font-family: var(--font-mono);
     font-size: 11px;
     color: var(--indigo);
-    padding: 8px 16px;
+    padding: 8px 14px;
     min-height: 40px;
     cursor: pointer;
     border-radius: var(--radius-pill);
@@ -1035,6 +987,23 @@ nav.hero-visible .nav-brand-title {
   .mobile-nav-btn.active {
     background: var(--indigo);
     color: var(--yellow);
+  }
+
+  /* Tighter dropzone on mobile */
+  .dropzone {
+    padding: 35px 16px;
+  }
+  .dropzone-heading {
+    font-size: 11px;
+  }
+  .preset-pills {
+    flex-wrap: wrap;
+  }
+
+  /* Stack output actions vertically */
+  .output-header {
+    flex-direction: column;
+    gap: 10px;
   }
 }
   </style>
@@ -1081,20 +1050,22 @@ nav.hero-visible .nav-brand-title {
         <div class="setting-group">
           <label class="label" for="llmProviderSelect">Vision OCR Engine</label>
           <select id="llmProviderSelect" class="select-input">
-            <option value="auto" selected>Auto Free OCR (OCR.space / Native)</option>
-            <option value="openrouter">OpenRouter Free Vision (qwen-2.5-vl)</option>
-            <option value="gemini">Google Gemini (gemini-2.0-flash)</option>
+            <option value="auto" selected>Auto (PyMuPDF4LLM + Gemini Flash)</option>
+            <option value="gemini">Gemini Flash Only</option>
+            <option value="offline">PyMuPDF4LLM Only (Offline)</option>
+            <option value="markitdown">MarkItDown Classic</option>
+            <option value="openrouter">OpenRouter (qwen-2.5-vl)</option>
             <option value="groq">Groq (llama-3.2-11b-vision)</option>
-            <option value="ollama">Ollama Local (llava @ localhost:11434)</option>
+            <option value="ollama">Ollama Local (llava)</option>
             <option value="openai">OpenAI (gpt-4o)</option>
           </select>
-          <span class="setting-desc">Choose a free or local vision provider.</span>
+          <span class="setting-desc">3-tier engine: native local first, then AI vision, then MarkItDown fallback.</span>
         </div>
 
         <div class="setting-group">
-          <label class="label" for="openaiApiKeyInput">Vision API Key (Optional)</label>
+          <label class="label" for="openaiApiKeyInput">Gemini / Vision API Key (Optional)</label>
           <input type="password" id="openaiApiKeyInput" class="text-input" placeholder="Optional API Key">
-          <span class="setting-desc">100% optional. Native document conversion works free without any API key.</span>
+          <span class="setting-desc">Free Gemini key at aistudio.google.com. Also works with OpenAI, Groq, OpenRouter keys.</span>
         </div>
 
         <div class="setting-group">
@@ -1156,14 +1127,6 @@ nav.hero-visible .nav-brand-title {
   </div>
 
   <main class="app-container">
-    <!-- Clean Minimal Hero Header -->
-    <header class="hero">
-      <img src="logo.svg" alt="MarkItDown Logo" class="hero-logo-img">
-      <h1 class="display brand-display hero-display"><span class="brand-sub">markitdown</span><span class="brand-main">inweb</span></h1>
-      <p class="body-text muted">
-        Convert PDF, Word, Excel, PowerPoint, Images, Audio, URLs, and text into clean Markdown.
-      </p>
-    </header>
 
     <!-- Multi-Input Workspace -->
     <section class="workbench">
@@ -1183,7 +1146,7 @@ nav.hero-visible .nav-brand-title {
               <img src="logo.svg" alt="MarkItDown Logo" class="dropzone-logo-img">
             </div>
             <div class="dropzone-heading">DRAG YOUR SHIT HERE OR CLICK TO UPLOAD</div>
-            <div class="zero-api-badge">100% FREE &amp; INSTANT</div>
+            <div class="zero-api-badge">NATIVE OCR // ZERO LATENCY</div>
             <div class="dropzone-sub">
               PDF, DOCX, XLSX, XLS, PPTX, Images, Audio, HTML, CSV, EPub, MSG, ZIP
             </div>
@@ -1761,52 +1724,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
-  function initOGInteractionEngine() {
-    const navBrand = document.querySelector(".brand");
-    const heroDisplay = document.querySelector(".hero-display");
-    const heroLogo = document.querySelector(".hero-logo-img");
-    const nav = document.querySelector("nav");
-
-    if (heroDisplay && nav) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // Hero Title IS APPEARED -> Nav Title DISAPPEARS
-            nav.classList.add("hero-visible");
-          } else {
-            // Hero Title IS DISAPPEARED -> Nav Title APPEARS
-            nav.classList.remove("hero-visible");
-          }
-        });
-      }, {
-        threshold: 0.1
-      });
-
-      observer.observe(heroDisplay);
-    }
-
-    if (navBrand && heroDisplay) {
-      navBrand.addEventListener("mouseenter", () => {
-        heroDisplay.classList.add("brother-active");
-        if (heroLogo) heroLogo.style.transform = "translateY(-6px) scale(1.15) rotate(4deg)";
-      });
-      navBrand.addEventListener("mouseleave", () => {
-        heroDisplay.classList.remove("brother-active");
-        if (heroLogo) heroLogo.style.transform = "";
-      });
-
-      heroDisplay.addEventListener("mouseenter", () => {
-        navBrand.classList.add("brother-active");
-      });
-      heroDisplay.addEventListener("mouseleave", () => {
-        navBrand.classList.remove("brother-active");
-      });
-    }
-
-    log("OG Clean UI Interaction Engine initialized with Smooth Title Appear/Disappear Relation System.", "info");
-  }
-
-  initOGInteractionEngine();
+  log("OG Clean UI initialized.", "info");
 });
   </script>
 </body>

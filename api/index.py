@@ -2,7 +2,9 @@ import sys
 import os
 import io
 import zipfile
+import asyncio
 import traceback
+import base64
 from typing import Optional, List
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,24 +12,43 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 
-# Ensure markitdown package from local monorepo or sys.path is importable
-repo_packages_path = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "..", "markitdown", "packages", "markitdown", "src")
-)
-if os.path.exists(repo_packages_path) and repo_packages_path not in sys.path:
-    sys.path.insert(0, repo_packages_path)
+try:
+    from markitdown import MarkItDown
+except Exception as e:
+    import traceback
+    print(f"MarkItDown import error detail: {e}")
+    traceback.print_exc()
+    MarkItDown = None
 
 try:
-    from markitdown import MarkItDown, StreamInfo
-except ImportError:
-    # Fallback to local import attempt
-    MarkItDown = None
+    from markitdown import StreamInfo
+except Exception as e:
     StreamInfo = None
+
+# Tier 1: PyMuPDF4LLM — native local PDF-to-Markdown
+try:
+    import pymupdf4llm
+    PYMUPDF4LLM_AVAILABLE = True
+except ImportError:
+    PYMUPDF4LLM_AVAILABLE = False
+
+# Tier 2: Gemini Flash Vision — free API for scanned docs & images
+try:
+    from google import genai
+    GEMINI_AVAILABLE = True
+except ImportError:
+    GEMINI_AVAILABLE = False
+
+# Image extensions for Tier 2 routing
+IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tiff", ".gif"}
+
+# Max concurrent batch conversions
+BATCH_CONCURRENCY = 5
 
 app = FastAPI(
     title="markitdowninweb API",
-    description="Full-featured REST API for Microsoft MarkItDown document conversion",
-    version="1.0.0"
+    description="3-Tier conversion engine: PyMuPDF4LLM (native) -> Gemini Flash (vision) -> MarkItDown (fallback)",
+    version="2.0.0"
 )
 
 # Enable CORS for cross-origin web app access
@@ -39,6 +60,85 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# ─── Tier 1: PyMuPDF4LLM Native PDF Conversion ──────────────────────────────
+
+def _tier1_convert_pdf(stream: io.BytesIO, filename: str) -> Optional[str]:
+    """Tier 1: Native local PDF-to-Markdown using PyMuPDF4LLM.
+    Extracts text, tables, headers directly from PDF primitives.
+    No API calls, no network, ~50ms/page."""
+    if not PYMUPDF4LLM_AVAILABLE:
+        return None
+    try:
+        stream.seek(0)
+        # pymupdf4llm.to_markdown accepts file path or bytes
+        pdf_bytes = stream.read()
+        import pymupdf as fitz
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        md_text = pymupdf4llm.to_markdown(doc)
+        doc.close()
+        if md_text and len(md_text.strip()) > 50:
+            return md_text
+        return None
+    except Exception as e:
+        print(f"Tier 1 (PyMuPDF4LLM) notice: {e}")
+        return None
+
+
+# ─── Tier 2: Gemini Flash Vision OCR ─────────────────────────────────────────
+
+def _tier2_convert_with_gemini(stream: io.BytesIO, filename: str, api_key: str, is_pdf: bool = False) -> Optional[str]:
+    """Tier 2: Gemini Flash vision for scanned PDFs and images.
+    Returns structured Markdown. Free tier at aistudio.google.com."""
+    if not GEMINI_AVAILABLE or not api_key:
+        return None
+    try:
+        stream.seek(0)
+        file_bytes = stream.read()
+
+        client = genai.Client(api_key=api_key)
+
+        ext = os.path.splitext(filename or "file")[1].lower()
+        mime_map = {
+            ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+            ".webp": "image/webp", ".bmp": "image/bmp", ".tiff": "image/tiff",
+            ".gif": "image/gif", ".pdf": "application/pdf",
+        }
+        mime_type = mime_map.get(ext, "application/octet-stream")
+
+        prompt = (
+            "Extract ALL text content from this document into clean, well-structured Markdown. "
+            "Preserve tables as Markdown tables, preserve headings hierarchy, preserve lists. "
+            "If there are images with text, OCR and include the text. "
+            "Output ONLY the Markdown content, no explanations."
+        )
+
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=[
+                prompt,
+                genai.types.Part.from_bytes(data=file_bytes, mime_type=mime_type),
+            ],
+        )
+
+        if response and response.text:
+            md_text = response.text.strip()
+            # Remove markdown code fences if Gemini wraps output in them
+            if md_text.startswith("```markdown"):
+                md_text = md_text[len("```markdown"):].strip()
+            if md_text.startswith("```"):
+                md_text = md_text[3:].strip()
+            if md_text.endswith("```"):
+                md_text = md_text[:-3].strip()
+            if len(md_text) > 10:
+                return md_text
+        return None
+    except Exception as e:
+        print(f"Tier 2 (Gemini Flash) notice: {e}")
+        return None
+
+
+# ─── Tier 3: MarkItDown Classic Fallback ─────────────────────────────────────
 
 def get_markitdown_instance(
     enable_plugins: bool = False,
@@ -56,7 +156,7 @@ def get_markitdown_instance(
 
     kwargs = {}
 
-    # Handle Free and Custom Vision API Providers
+    # Handle Vision API Providers
     api_key = openai_api_key or os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY") or os.getenv("GROQ_API_KEY") or os.getenv("GEMINI_API_KEY") or "free-dummy-key"
     base_url = openai_base_url
     model = llm_model or "gpt-4o"
@@ -75,7 +175,7 @@ def get_markitdown_instance(
         model = llm_model or "llava"
 
     # Configure Vision client if key or provider is specified
-    if api_key and (enable_plugins or openai_api_key or openai_base_url or llm_provider != "auto"):
+    if api_key and (enable_plugins or openai_api_key or openai_base_url or llm_provider not in ("auto", "offline", "markitdown")):
         try:
             from openai import OpenAI
             client_kwargs = {"api_key": api_key}
@@ -99,13 +199,114 @@ def get_markitdown_instance(
     return MarkItDown(enable_plugins=enable_plugins, **kwargs)
 
 
+def _tier3_convert_stream(stream: io.BytesIO, filename: str, ext: str,
+                          keep_data_uris: bool = False, mime_hint: Optional[str] = None,
+                          **settings) -> str:
+    """Tier 3: MarkItDown classic conversion as final safety net."""
+    md = get_markitdown_instance(**settings)
+    stream.seek(0)
+
+    stream_info = None
+    if ext or mime_hint:
+        stream_info = StreamInfo(
+            filename=filename,
+            extension=ext if ext.startswith(".") else f".{ext}" if ext else None,
+            mimetype=mime_hint
+        )
+
+    result = md.convert_stream(stream, stream_info=stream_info, keep_data_uris=keep_data_uris)
+    return result.markdown
+
+
+# ─── Smart 3-Tier Conversion Router ──────────────────────────────────────────
+
+def _get_gemini_key(openai_api_key: Optional[str] = None, llm_provider: Optional[str] = None) -> Optional[str]:
+    """Resolve Gemini API key from settings or environment."""
+    if llm_provider == "gemini" and openai_api_key:
+        return openai_api_key
+    return os.getenv("GEMINI_API_KEY") or (openai_api_key if llm_provider in ("auto", "gemini", None) else None)
+
+
+def _smart_convert_sync(stream: io.BytesIO, filename: str, ext: str,
+                        keep_data_uris: bool = False, mime_hint: Optional[str] = None,
+                        llm_provider: Optional[str] = "auto",
+                        openai_api_key: Optional[str] = None,
+                        **settings) -> str:
+    """3-tier conversion engine (synchronous, runs in thread pool).
+    
+    Tier 1: PyMuPDF4LLM — native PDF extraction (~50ms/page, offline)
+    Tier 2: Gemini Flash — vision OCR for scanned/image docs (free API)
+    Tier 3: MarkItDown — classic library fallback
+    """
+    # If user explicitly chose a specific mode, honor it
+    if llm_provider == "offline":
+        # Offline mode: Tier 1 only for PDFs, Tier 3 for everything else
+        if ext == ".pdf":
+            result = _tier1_convert_pdf(stream, filename)
+            if result:
+                return result
+        stream.seek(0)
+        return _tier3_convert_stream(stream, filename, ext, keep_data_uris, mime_hint,
+                                     llm_provider="auto", openai_api_key=openai_api_key, **settings)
+
+    if llm_provider == "markitdown":
+        # Force MarkItDown classic only
+        stream.seek(0)
+        return _tier3_convert_stream(stream, filename, ext, keep_data_uris, mime_hint,
+                                     llm_provider="auto", openai_api_key=openai_api_key, **settings)
+
+    # ── Auto / Gemini mode: full 3-tier cascade ──
+
+    # Tier 1: Native PDF extraction (instant, no API)
+    tier1_result = None
+    if ext == ".pdf" and llm_provider in ("auto", "offline", None):
+        tier1_result = _tier1_convert_pdf(stream, filename)
+        if tier1_result:
+            return tier1_result
+
+    # Tier 2: Gemini Flash Vision (for images + scanned PDFs that Tier 1 missed)
+    gemini_key = _get_gemini_key(openai_api_key, llm_provider)
+    if gemini_key and llm_provider in ("auto", "gemini", None):
+        if ext in IMAGE_EXTS or (ext == ".pdf" and tier1_result is None):
+            stream.seek(0)
+            tier2_result = _tier2_convert_with_gemini(stream, filename, gemini_key, is_pdf=(ext == ".pdf"))
+            if tier2_result:
+                return tier2_result
+
+    # Tier 3: MarkItDown classic fallback
+    stream.seek(0)
+    return _tier3_convert_stream(stream, filename, ext, keep_data_uris, mime_hint,
+                                 llm_provider=llm_provider, openai_api_key=openai_api_key, **settings)
+
+
+# ─── Helpers ─────────────────────────────────────────────────────────────────
+
+def _build_response(markdown_text: str, filename: str = "document", **extra):
+    """Build standard JSON response with text statistics."""
+    return {
+        "success": True,
+        "filename": filename,
+        "title": extra.get("title") or filename,
+        "markdown": markdown_text,
+        "char_count": len(markdown_text),
+        "word_count": len(markdown_text.split()),
+        "estimated_tokens": int(len(markdown_text.split()) * 1.33),
+        **{k: v for k, v in extra.items() if k != "title"}
+    }
+
+
+# ─── API Endpoints ───────────────────────────────────────────────────────────
+
 @app.get("/api/health")
 def health():
     return {
         "status": "online",
         "app": "markitdowninweb",
         "markitdown_available": MarkItDown is not None,
-        "version": "1.0.0"
+        "pymupdf4llm_available": PYMUPDF4LLM_AVAILABLE,
+        "gemini_available": GEMINI_AVAILABLE,
+        "engine": "3-tier (PyMuPDF4LLM -> Gemini Flash -> MarkItDown)",
+        "version": "2.0.0"
     }
 
 
@@ -113,7 +314,7 @@ def health():
 def get_supported_formats():
     return {
         "formats": [
-            {"extension": ".pdf", "name": "PDF Document", "category": "Document", "features": ["Tables", "MasterFormat", "OCR"]},
+            {"extension": ".pdf", "name": "PDF Document", "category": "Document", "features": ["Tables", "MasterFormat", "Native OCR", "Gemini Vision"]},
             {"extension": ".docx", "name": "Microsoft Word", "category": "Document", "features": ["Styles", "Tables", "Images"]},
             {"extension": ".xlsx", "name": "Microsoft Excel", "category": "Spreadsheet", "features": ["Multi-sheet", "HTML Tables"]},
             {"extension": ".xls", "name": "Excel (Legacy)", "category": "Spreadsheet", "features": ["Multi-sheet"]},
@@ -125,105 +326,12 @@ def get_supported_formats():
             {"extension": ".epub", "name": "EPub eBook", "category": "eBook", "features": ["Chapter Extraction"]},
             {"extension": ".msg", "name": "Outlook Message", "category": "Email", "features": ["Headers", "Body Text"]},
             {"extension": ".zip", "name": "ZIP Archive", "category": "Archive", "features": ["Recursive Extraction"]},
-            {"extension": ".png", "name": "PNG Image", "category": "Media", "features": ["EXIF Tags", "LLM Vision Captioning"]},
-            {"extension": ".jpg", "name": "JPEG Image", "category": "Media", "features": ["EXIF Tags", "LLM Vision Captioning"]},
+            {"extension": ".png", "name": "PNG Image", "category": "Media", "features": ["Gemini Vision OCR", "LLM Captioning"]},
+            {"extension": ".jpg", "name": "JPEG Image", "category": "Media", "features": ["Gemini Vision OCR", "LLM Captioning"]},
             {"extension": ".mp3", "name": "MP3 Audio", "category": "Audio", "features": ["EXIF Tags", "Speech Transcription"]},
             {"extension": ".wav", "name": "WAV Audio", "category": "Audio", "features": ["EXIF Tags", "Speech Transcription"]}
         ]
     }
-
-
-def convert_pdf_with_pymupdf(stream: io.BytesIO, filename: str, keep_data_uris: bool = False) -> str:
-    """Fast, layout-preserving PDF converter using PyMuPDF (fitz) that extracts text blocks and performs OCR on embedded illustrations/images in vertical page order."""
-    import fitz, base64
-    stream.seek(0)
-    doc = fitz.open(stream=stream.read(), filetype="pdf")
-    title = doc.metadata.get("title") or os.path.splitext(filename or "Document")[0]
-    
-    md_parts = [f"# {title}\n\n"]
-    for page_num in range(len(doc)):
-        page = doc[page_num]
-        md_parts.append(f"<!-- Page {page_num + 1} -->\n\n")
-        
-        try:
-            page_dict = page.get_text("dict")
-            blocks = page_dict.get("blocks", [])
-            # Sort blocks in vertical reading order (y0)
-            blocks.sort(key=lambda b: b["bbox"][1])
-
-            for b in blocks:
-                # Type 0: Text Block
-                if b.get("type") == 0:
-                    lines_text = []
-                    for line in b.get("lines", []):
-                        span_text = "".join([s.get("text", "") for s in line.get("spans", [])])
-                        if span_text.strip():
-                            lines_text.append(span_text.strip())
-                    if lines_text:
-                        md_parts.append("\n".join(lines_text) + "\n\n")
-
-                # Type 1: Image / Illustration Block
-                elif b.get("type") == 1:
-                    img_bytes = b.get("image")
-                    ext = b.get("ext", "png")
-                    if img_bytes:
-                        # Try free OCR on illustration image
-                        ocr_text = ""
-                        try:
-                            img_stream = io.BytesIO(img_bytes)
-                            ocr_result = convert_image_with_ocrspace(img_stream, f"page_{page_num+1}_img.{ext}")
-                            if ocr_result and "*[Image OCR]*" in ocr_result:
-                                ocr_text = ocr_result.split("*[Image OCR]*")[1].split("[End OCR]*")[0].strip()
-                        except Exception:
-                            pass
-
-                        if ocr_text:
-                            md_parts.append(f"*[Illustration / Image OCR]*\n{ocr_text}\n*[End Illustration]*\n\n")
-                        else:
-                            b64 = base64.b64encode(img_bytes).decode("ascii")
-                            if keep_data_uris:
-                                md_parts.append(f"![Illustration](data:image/{ext};base64,{b64})\n\n")
-                            else:
-                                md_parts.append(f"![Illustration](data:image/{ext};base64,{b64[:40]}...)\n\n")
-        except Exception as page_err:
-            # Fallback to plain text block extraction for page
-            plain_text = page.get_text("text")
-            if plain_text.strip():
-                md_parts.append(plain_text + "\n\n")
-                
-    return "".join(md_parts)
-
-
-def convert_image_with_ocrspace(stream: io.BytesIO, filename: str) -> str:
-    """Free, highly reliable public OCR engine using OCR.space for images (PNG, JPG, WEBP, BMP, TIFF)."""
-    import requests
-    stream.seek(0)
-    ext = os.path.splitext(filename or "image.png")[1].lower()
-    mime_types = {
-        ".png": "image/png",
-        ".jpg": "image/jpeg",
-        ".jpeg": "image/jpeg",
-        ".webp": "image/webp",
-        ".bmp": "image/bmp",
-        ".tiff": "image/tiff"
-    }
-    mime = mime_types.get(ext, "image/jpeg")
-    
-    files = {"file": (filename or "image.jpg", stream.read(), mime)}
-    res = requests.post(
-        "https://api.ocr.space/parse/image",
-        files=files,
-        data={"apikey": "K88582736488957", "isTable": "true", "detectOrientation": "true"},
-        timeout=15
-    )
-    if res.status_code == 200:
-        data = res.json()
-        if data.get("ParsedResults"):
-            parsed_text = data["ParsedResults"][0].get("ParsedText", "").strip()
-            if parsed_text:
-                title = os.path.splitext(filename or "Image")[0]
-                return f"# {title}\n\n*[Image OCR]*\n{parsed_text}\n[End OCR]*\n"
-    return ""
 
 
 @app.post("/api/convert/file")
@@ -247,83 +355,25 @@ async def convert_file(
         stream = io.BytesIO(content)
         ext = (extension_hint or os.path.splitext(file.filename or "")[1]).lower()
 
-        # Fast path for standalone images using reliable public OCR engine when no vision API key provided
-        image_exts = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tiff"}
-        if ext in image_exts and not openai_api_key:
-            try:
-                ocr_text = convert_image_with_ocrspace(stream, file.filename or "image.png")
-                if ocr_text:
-                    title = file.filename or "Image OCR"
-                    return {
-                        "success": True,
-                        "filename": file.filename,
-                        "title": title,
-                        "markdown": ocr_text,
-                        "char_count": len(ocr_text),
-                        "word_count": len(ocr_text.split()),
-                        "estimated_tokens": int(len(ocr_text.split()) * 1.33)
-                    }
-            except Exception as ocr_err:
-                print(f"Public OCR fast path notice: {ocr_err}. Falling back to standard MarkItDown...")
-                stream.seek(0)
-
-        # Fast path for PDFs using PyMuPDF (fitz) when no cloud engines requested
-        if ext == ".pdf" and not docintel_endpoint and not cu_endpoint and not openai_api_key:
-            try:
-                markdown_text = convert_pdf_with_pymupdf(stream, file.filename or "document.pdf", keep_data_uris=keep_data_uris)
-                if len(markdown_text.strip()) > 50:
-                    title = file.filename or "Converted PDF"
-                    return {
-                        "success": True,
-                        "filename": file.filename,
-                        "title": title,
-                        "markdown": markdown_text,
-                        "char_count": len(markdown_text),
-                        "word_count": len(markdown_text.split()),
-                        "estimated_tokens": int(len(markdown_text.split()) * 1.33)
-                    }
-            except Exception as pdf_err:
-                print(f"PyMuPDF fast path notice: {pdf_err}. Falling back to standard MarkItDown...")
-                stream.seek(0)
-        
-        md = get_markitdown_instance(
-            enable_plugins=enable_plugins,
+        # Run conversion in thread pool to avoid blocking the event loop
+        markdown_text = await asyncio.to_thread(
+            _smart_convert_sync,
+            stream, file.filename or "document", ext,
+            keep_data_uris=keep_data_uris,
+            mime_hint=mime_hint,
+            llm_provider=llm_provider,
             openai_api_key=openai_api_key,
+            enable_plugins=enable_plugins,
             openai_base_url=openai_base_url,
             llm_model=llm_model,
             llm_prompt=llm_prompt,
-            llm_provider=llm_provider,
             docintel_endpoint=docintel_endpoint,
             cu_endpoint=cu_endpoint,
-            cu_analyzer_id=cu_analyzer_id
+            cu_analyzer_id=cu_analyzer_id,
         )
 
-        stream_info = None
-        if ext or mime_hint:
-            stream_info = StreamInfo(
-                filename=file.filename,
-                extension=ext if ext.startswith(".") else f".{ext}" if ext else None,
-                mimetype=mime_hint
-            )
-
-        result = md.convert_stream(
-            stream,
-            stream_info=stream_info,
-            keep_data_uris=keep_data_uris
-        )
-
-        markdown_text = result.markdown
-        title = result.title or file.filename or "Converted Document"
-
-        return {
-            "success": True,
-            "filename": file.filename,
-            "title": title,
-            "markdown": markdown_text,
-            "char_count": len(markdown_text),
-            "word_count": len(markdown_text.split()),
-            "estimated_tokens": int(len(markdown_text.split()) * 1.33)
-        }
+        return _build_response(markdown_text, file.filename or "document",
+                               title=file.filename or "Converted Document")
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Conversion failed: {str(e)}")
@@ -339,27 +389,21 @@ class URLConvertRequest(BaseModel):
 
 
 @app.post("/api/convert/url")
-def convert_url(req: URLConvertRequest):
+async def convert_url(req: URLConvertRequest):
     try:
-        md = get_markitdown_instance(
-            enable_plugins=req.enable_plugins,
-            openai_api_key=req.openai_api_key,
-            openai_base_url=req.openai_base_url,
-            llm_model=req.llm_model
-        )
+        def _convert():
+            md = get_markitdown_instance(
+                enable_plugins=req.enable_plugins,
+                openai_api_key=req.openai_api_key,
+                openai_base_url=req.openai_base_url,
+                llm_model=req.llm_model
+            )
+            result = md.convert_uri(req.url, keep_data_uris=req.keep_data_uris)
+            return result.markdown, result.title
 
-        result = md.convert_uri(req.url, keep_data_uris=req.keep_data_uris)
-        markdown_text = result.markdown
+        markdown_text, title = await asyncio.to_thread(_convert)
 
-        return {
-            "success": True,
-            "url": req.url,
-            "title": result.title or req.url,
-            "markdown": markdown_text,
-            "char_count": len(markdown_text),
-            "word_count": len(markdown_text.split()),
-            "estimated_tokens": int(len(markdown_text.split()) * 1.33)
-        }
+        return _build_response(markdown_text, req.url, title=title or req.url, url=req.url)
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"URL conversion failed: {str(e)}")
@@ -372,22 +416,18 @@ class TextConvertRequest(BaseModel):
 
 
 @app.post("/api/convert/text")
-def convert_text(req: TextConvertRequest):
+async def convert_text(req: TextConvertRequest):
     try:
-        md = get_markitdown_instance(enable_plugins=req.enable_plugins)
-        stream = io.BytesIO(req.text.encode("utf-8"))
-        stream_info = StreamInfo(extension=req.extension_hint)
+        def _convert():
+            md = get_markitdown_instance(enable_plugins=req.enable_plugins)
+            stream = io.BytesIO(req.text.encode("utf-8"))
+            stream_info = StreamInfo(extension=req.extension_hint)
+            result = md.convert_stream(stream, stream_info=stream_info)
+            return result.markdown
 
-        result = md.convert_stream(stream, stream_info=stream_info)
-        markdown_text = result.markdown
+        markdown_text = await asyncio.to_thread(_convert)
 
-        return {
-            "success": True,
-            "markdown": markdown_text,
-            "char_count": len(markdown_text),
-            "word_count": len(markdown_text.split()),
-            "estimated_tokens": int(len(markdown_text.split()) * 1.33)
-        }
+        return _build_response(markdown_text, f"text{req.extension_hint}")
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Text conversion failed: {str(e)}")
@@ -399,53 +439,58 @@ async def convert_batch(
     enable_plugins: bool = Form(False),
     keep_data_uris: bool = Form(False),
     openai_api_key: Optional[str] = Form(None),
+    llm_provider: Optional[str] = Form("auto"),
 ):
-    md = get_markitdown_instance(
-        enable_plugins=enable_plugins,
-        openai_api_key=openai_api_key
-    )
+    # Read all file contents upfront (async)
+    file_data = []
+    for file in files:
+        content = await file.read()
+        file_data.append((file.filename or "file.bin", content))
 
-    zip_buffer = io.BytesIO()
-    results = []
+    # Convert files concurrently with semaphore limit
+    semaphore = asyncio.Semaphore(BATCH_CONCURRENCY)
 
-    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
-        for file in files:
-            filename = file.filename or "file.bin"
-            base_name, _ = os.path.splitext(filename)
+    async def convert_one(filename: str, content: bytes):
+        async with semaphore:
+            base_name, ext_part = os.path.splitext(filename)
+            ext = ext_part.lower()
             md_filename = f"{base_name}.md"
-
             try:
-                content = await file.read()
                 stream = io.BytesIO(content)
-                ext = os.path.splitext(filename)[1]
-                stream_info = StreamInfo(filename=filename, extension=ext)
-
-                res = md.convert_stream(stream, stream_info=stream_info, keep_data_uris=keep_data_uris)
-                zip_file.writestr(md_filename, res.markdown)
-                results.append({
-                    "filename": filename,
-                    "status": "success",
-                    "markdown_file": md_filename,
-                    "char_count": len(res.markdown)
-                })
+                markdown_text = await asyncio.to_thread(
+                    _smart_convert_sync,
+                    stream, filename, ext,
+                    keep_data_uris=keep_data_uris,
+                    llm_provider=llm_provider,
+                    openai_api_key=openai_api_key,
+                    enable_plugins=enable_plugins,
+                )
+                return md_filename, markdown_text, None
             except Exception as e:
                 error_msg = f"# Conversion Error for {filename}\n\n```{str(e)}```"
-                zip_file.writestr(f"{base_name}_error.md", error_msg)
-                results.append({
-                    "filename": filename,
-                    "status": "error",
-                    "error": str(e)
-                })
+                return f"{base_name}_error.md", error_msg, str(e)
+
+    # Run all conversions concurrently (capped at BATCH_CONCURRENCY)
+    tasks = [convert_one(fn, data) for fn, data in file_data]
+    results = await asyncio.gather(*tasks)
+
+    # Pack results into ZIP
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+        for md_filename, content, error in results:
+            zip_file.writestr(md_filename, content)
 
     zip_buffer.seek(0)
-    
+
     return Response(
         content=zip_buffer.getvalue(),
         media_type="application/zip",
         headers={"Content-Disposition": "attachment; filename=markitdowninweb_export.zip"}
     )
 
-# Serve public directory static files
+
+# ─── Static File Serving ─────────────────────────────────────────────────────
+
 public_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "public"))
 
 @app.get("/")
@@ -470,4 +515,3 @@ def serve_static(filename: str):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("index:app", host="0.0.0.0", port=8000, reload=True)
-

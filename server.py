@@ -16,8 +16,8 @@ from index import app
 
 if __name__ == "__main__":
     print("=" * 65)
-    print("  🚀 Starting MARKITDOWNINWEB Server...")
-    print("  📍 Local Access:  http://localhost:8000")
-    print("  📚 API Docs:      http://localhost:8000/docs")
+    print("  Starting MARKITDOWNINWEB Server...")
+    print("  Local Access:  http://localhost:8000")
+    print("  API Docs:      http://localhost:8000/docs")
     print("=" * 65)
     uvicorn.run(app, host="127.0.0.1", port=8000)

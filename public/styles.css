@@ -80,33 +80,28 @@ nav {
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
 }
 
-.live-dot {
-  width: 10px;
-  height: 10px;
-  background: var(--live-dot);
-  border-radius: 50%;
-  display: inline-block;
-  box-shadow: 0 0 8px var(--live-dot);
+.nav-logo-img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.nav-logo-img:hover {
+  transform: scale(1.25) rotate(-6deg);
 }
 
 .logo-text {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   letter-spacing: 0.02em;
-}
-
-.version-tag {
-  font-size: 10px;
-  color: var(--indigo);
-  background: rgba(54, 36, 134, 0.1);
-  padding: 3px 10px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--indigo);
-  font-weight: 600;
+  display: flex;
+  align-items: center;
 }
 
 .nav-controls {
